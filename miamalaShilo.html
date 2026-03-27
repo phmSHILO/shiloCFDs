@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Tegemeza_CFDs_26</title>
+<title>Miamala</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
@@ -117,12 +117,12 @@
 <body class="p-2">
     <div class="nav-links">
         <a href="index.html">Home</a>
-        <a href="miamalaShilo.html">Miamala</a>
+        <a href="miamalaShilo.html" class="active">Miamala</a>
         <a href="Ada_CFDs_26.html">Ada_26</a>
         <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a>
         <a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
         <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a>
-        <a href="Tegemeza_CFDs_26.html" class="active">Tegemeza Vjn 26</a>
+        <a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
     </div>
 
 <div class="container-fluid">
@@ -243,7 +243,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    const db = database.ref("Tegemeza_CFDs_26");
+    const db = database.ref("miamala");
     const usersDb = database.ref("Users"); // Reference to your Users node
 
     let datePickerInstance; // Renamed to avoid confusion and clearly mark as the Flatpickr instance
@@ -759,6 +759,34 @@
         // No need to call filterTable here, the 'change' trigger from .val('').trigger('change') will call it.
     });
 </script>
+
+<style>
+    /* Add this CSS to your existing style block */
+    #myTable {
+        position: relative; /* Establish a stacking context for the table */
+        z-index: 1; /* Ensure table has a stacking context above other content */
+    }
+    #myTable thead {
+        position: sticky;
+        top: 0;
+        background: #f8f9fa;
+        z-index: 10; /* Give the sticky header a higher z-index */
+    }
+    #myTable tfoot {
+        position: sticky;
+        bottom: 0;
+        background: #f8f9fa;
+        z-index: 10; /* Give the sticky footer a higher z-index */
+    }
+    /* Ensure table-control-cell content (buttons) respects z-index of table cells */
+    .table-control-cell {
+        min-width: 140px;
+        width: 140px;
+        /* Add relative positioning to the cell itself if its children are absolutely positioned */
+        /* position: relative; */
+        z-index: 5; /* Ensure cells are below sticky header/footer but above normal content */
+    }
+</style>
 
 </body>
 </html>

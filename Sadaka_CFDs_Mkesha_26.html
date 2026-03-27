@@ -4,7 +4,7 @@
 <head>
 
 <meta charset="UTF-8">
-<title>Tegemeza_CFDs_26</title>
+<title>Sadaka_CFDs_Mkesha_26</title>
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
@@ -75,14 +75,14 @@
             color: white;
         }
 
-/* NEW: Prevent dropdown options from wrapping */
+/* Prevent dropdown options from wrapping */
 .select2-results__option {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .select2-dropdown {
-    min-width: 200px; /* ensures enough width for longer items */
+    min-width: 200px;
 }
 </style>
 
@@ -121,15 +121,15 @@
         <a href="Ada_CFDs_26.html">Ada_26</a>
         <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a>
         <a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
-        <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a>
-        <a href="Tegemeza_CFDs_26.html" class="active">Tegemeza Vjn 26</a>
+        <a href="Sadaka_CFDs_Mkesha_26.html" class="active">Sadaka Mkesha 26</a>
+        <a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
     </div>
 
 <div class="container-fluid">
 
 
 
-<div class="d-flex align-items-end mb-3" ">
+<div class="d-flex align-items-end mb-3">
  <div class="me-2">
         <select class="form-select" id="filterMonth">
             <option value="">All Months</option>
@@ -155,23 +155,20 @@
             <option value="">All Descriptions</option>
         </select>
     </div>
-    <div>
-        <select class="form-select " id="filterAmount">
+    <div class="me-2 d-flex align-items-center">
+        <select class="form-select me-2" id="filterAmount">
             <option value="">All Amounts</option>
         </select>
-        </div>
-        <div>
         <button class="btn btn-outline-secondary" id="clearFilters" title="Clear all filters">
             <i class="fa-solid fa-xmark"></i>
         </button>
-        </div>
-    
-    <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modal" onclick="clear()">
+    </div>
+    <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modal" onclick="clearForm()">
         Add Transaction
     </button>
 </div>
 
-<div id="tableContainer" style="max-height: 75vh; overflow:scroll;margin-bottom: 0; ">
+<div id="tableContainer" style="max-height: 75vh; overflow:scroll;margin-bottom: 0;">
 <table id="myTable" class="table table-bordered table-striped">
  <thead class="table-dark">
 <tr>
@@ -203,7 +200,6 @@
 </div>
 
 <!-- Modal -->
-
 <div class="modal fade" id="modal">
 <div class="modal-dialog">
 <div class="modal-content">
@@ -224,14 +220,14 @@
     <!-- Options will be populated here -->
 </select>
 <input class="form-control mb-2" id="amount" type="number" placeholder="Amount">
-<input class="form-control mb-2" id="date" type="text" placeholder="Date">
+<input class="form-control mb-2" id="date" type="text" placeholder="Date"> <!-- changed to text for flatpickr -->
 
 </div>
 
 <div class="modal-footer">
 
-<button class="btn btn-success" id="saveBtn" onclick="save()">Save</button>
-<button class="btn btn-warning d-none" id="updateBtn" onclick="update()">Update</button>
+<button class="btn btn-success" id="saveBtn" onclick="saveTransaction()">Save</button>
+<button class="btn btn-warning d-none" id="updateBtn" onclick="updateTransaction()">Update</button>
 
 </div>
 
@@ -243,7 +239,7 @@
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
 <script>
-    const db = database.ref("Tegemeza_CFDs_26");
+    const db = database.ref("Sadaka_CFDs_Mkesha_26");
     const usersDb = database.ref("Users"); // Reference to your Users node
 
     let datePickerInstance; // Renamed to avoid confusion and clearly mark as the Flatpickr instance
