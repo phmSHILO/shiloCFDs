@@ -42,7 +42,7 @@
             font-weight: bold;
         }
         .table-footer-summary .total-sum {
-            background-color: #ffc107; /* Bootstrap yellow */
+            background-color: hsl(115, 100%, 51%); /* Bootstrap yellow */
             color: #000;
         }
         .table-footer-summary .total-debt {
@@ -125,6 +125,12 @@
             background: #0d6efd;
             color: white;
         }
+
+        table tbody td:nth-child(15) {
+    
+    color: blue;
+}
+
 
         /* --- Custom Responsive Styles Added During Debugging --- */
 
@@ -267,7 +273,7 @@
             <tfoot class="table-footer-summary">
                 <tr>
                     <!-- Colspan adjusted for the new 'Action' column -->
-                    <td colspan="15" class="text-end"></td> 
+                    <td colspan="14" class="text-end"></td> 
                     <td class="total-sum" id="grandTotalSum">0</td>
                     <td class="total-debt" id="grandTotalDebt">0</td>
                 </tr>

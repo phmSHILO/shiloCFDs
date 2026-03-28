@@ -1,51 +1,51 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
+    <meta charset="UTF-8">
+    <title>miamalaShilo</title>
 
-<meta charset="UTF-8">
-<title>Miamala</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Added: Select2 CSS (for searchable dropdowns) -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
 
-<!-- Added: Select2 CSS (for searchable dropdowns) -->
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<link href="https://cdn.jsdelivr.net/npm/select2-bootstrap-5-theme@1.3.0/dist/select2-bootstrap-5-theme.min.css" rel="stylesheet" />
+    <style>
+        table th, table td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table-control-cell {
+            min-width: 140px;
+            width: 140px;
+        }
 
-<style>
-    table th, table td {
-        text-align: center;
-        vertical-align: middle;
-    }
-    .table-control-cell {
-        min-width: 140px;
-        width: 140px;
-    }
+        .table td, .table th {
+            border: 2px solid #dee2e6 !important;
+        }
 
-    .table td, .table th {
-        border: 2px solid #dee2e6 !important;
-    }
+        #myTable thead{position: sticky;top:0; background: #f8f9fa;}
+        #myTable tfoot{position: sticky;bottom:0; background: #f8f9fa;}
 
-     #myTable thead{position: sticky;top:0; background: #f8f9fa;}
-    #myTable tfoot{position: sticky;bottom:0; background: #f8f9fa;}
+        table td, table th {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
 
-    table td, table th {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+        /* The rule below is redundant because it's already defined above. Keeping it for now as it was in your original code. */
+        .table td, .table th { border: 2px solid #dee2e6 !important; }
 
-.table td, .table th { border: 2px solid #dee2e6 !important; }
+        /* Optional: ensure Select2 dropdowns match the original form‑select width */
+        .select2-container--bootstrap-5 .select2-selection {
+            min-height: 38px;
+            border-radius: 0.375rem;
+        }
 
-/* Optional: ensure Select2 dropdowns match the original form‑select width */
-.select2-container--bootstrap-5 .select2-selection {
-    min-height: 38px;
-    border-radius: 0.375rem;
-}
-
-.nav-links {
+        .nav-links {
             background: white;
             border-bottom: 1px solid #dee2e6;
             padding: 6px 12px;
@@ -75,314 +75,145 @@
             color: white;
         }
 
-/* NEW: Prevent dropdown options from wrapping */
-.select2-results__option {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.select2-dropdown {
-    min-width: 200px; /* ensures enough width for longer items */
-}
-</style>
-
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-<!-- Added: jQuery and Select2 JS (required for search) -->
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-<script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
-      authDomain: "vacantt-1.firebaseapp.com",
-      databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
-      projectId: "vacantt-1",
-      storageBucket: "vacantt-1.appspot.com",
-      messagingSenderId: "484618102811",
-      appId: "1:484618102811:web:84b701f47c601ee07af0be"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    console.log('Firebase initialized, database ready', database);
-
-    let datePicker;
-</script>
-
-</head>
-
-<body class="p-2">
-    <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="miamalaShilo.html" class="active">Miamala</a>
-        <a href="Ada_CFDs_26.html">Ada_26</a>
-        <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a>
-        <a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
-        <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a>
-        <a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
-    </div>
-
-<div class="container-fluid">
-
-
-
-<div class="d-flex align-items-end mb-3" ">
- <div class="me-2">
-        <select class="form-select" id="filterMonth">
-            <option value="">All Months</option>
-        </select>
-    </div>
-    <div class="me-2">
-        <select class="form-select" id="filterDate">
-            <option value="">All Dates</option>
-        </select>
-    </div>
-    <div class="me-2">
-        <select class="form-select" id="filterUid">
-            <option value="">All UIDs</option>
-        </select>
-    </div>
-    <div class="me-2">
-        <select class="form-select" id="filterName">
-            <option value="">All Names</option>
-        </select>
-    </div>
-    <div class="me-2">
-        <select class="form-select" id="filterDescription">
-            <option value="">All Descriptions</option>
-        </select>
-    </div>
-    <div>
-        <select class="form-select " id="filterAmount">
-            <option value="">All Amounts</option>
-        </select>
-        </div>
-        <div>
-        <button class="btn btn-outline-secondary" id="clearFilters" title="Clear all filters">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
-        </div>
-    
-    <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modal" onclick="clear()">
-        Add Transaction
-    </button>
-</div>
-
-<div id="tableContainer" style="max-height: 75vh; overflow:scroll;margin-bottom: 0; ">
-<table id="myTable" class="table table-bordered table-striped">
- <thead class="table-dark">
-<tr>
-<th>SN</th>
-<th>MONTH</th>
-<th>DATE</th>
-<th>UID</th>
-<th>NAME</th>
-<th>DESCRIPTION</th>
-<th>AMOUNT</th>
-<th>CONTROLS</th>
-</tr>
-</thead>
-
-<tbody id="tbody"></tbody>
-
-<tfoot>
-<tr>
-<th colspan="4"></th>
-<th id="ppleCont">0</th>
-<th class="text-end">TOTAL</th>
-<th id="total">0</th>
-</tr>
-</tfoot>
-
-</table>
-</div>
-
-</div>
-
-<!-- Modal -->
-
-<div class="modal fade" id="modal">
-<div class="modal-dialog">
-<div class="modal-content">
-
-<div class="modal-header">
-<h5>Transaction</h5>
-<button class="btn-close" data-bs-dismiss="modal"></button>
-</div>
-
-<div class="modal-body">
-
-<input type="hidden" id="key">
-
-<input class="form-control mb-2" id="uid" placeholder="UID">
-<input class="form-control mb-2" id="name" placeholder="Name">
-<select class="form-select mb-2" id="description">
-    <option value="">Select Description</option>
-    <!-- Options will be populated here -->
-</select>
-<input class="form-control mb-2" id="amount" type="number" placeholder="Amount">
-<input class="form-control mb-2" id="date" type="text" placeholder="Date">
-
-</div>
-
-<div class="modal-footer">
-
-<button class="btn btn-success" id="saveBtn" onclick="save()">Save</button>
-<button class="btn btn-warning d-none" id="updateBtn" onclick="update()">Update</button>
-
-</div>
-
-</div>
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-<script>
-    const db = database.ref("miamala");
-    const usersDb = database.ref("Users"); // Reference to your Users node
-
-    let datePickerInstance; // Renamed to avoid confusion and clearly mark as the Flatpickr instance
-    let currentUserRole = null; // To store the role of the logged-in user
-
-    // Function to show/hide elements based on role
-    function applyRoleRestrictions(role) {
-        if (role === 'guest') {
-            // Disable Add Transaction button
-            const addTransactionButton = document.querySelector('.btn.btn-primary.ms-auto');
-            if (addTransactionButton) { // Check if the button exists
-                 addTransactionButton.style.display = 'none';
-            }
-
-            // The Edit/Delete buttons in the table are handled dynamically in load()
-            // by setting them to disabled.
-        } else if (role === 'admin') {
-            // Admin can do everything, so ensure buttons are visible
-            const addTransactionButton = document.querySelector('.btn.btn-primary.ms-auto');
-            if (addTransactionButton) { // Check if the button exists
-                addTransactionButton.style.display = '';
-            }
-            // Edit/Delete buttons will be shown by default (enabled) in load() for admin
+        /* Prevent dropdown options from wrapping */
+        .select2-results__option {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-    }
-
-    // Passcode prompt function
-    async function promptForPasscode() {
-        let passcode = null;
-        let adminPasscode = null;
-        let guestPasscode = null;
-
-        // Fetch passcodes from Firebase first
-        await usersDb.once("value", snap => {
-            const usersData = snap.val();
-            if (usersData) {
-                adminPasscode = usersData.Admin;
-                guestPasscode = usersData.Guest;
-            }
-        });
-
-        while (true) {
-            passcode = prompt("Please enter your passcode:");
-            if (passcode === null) {
-                // User cancelled the prompt, keep asking or refresh page.
-                // For this example, we'll keep prompting.
-                alert("Passcode is required to access the application.");
-                continue;
-            }
-
-            if (passcode === String(adminPasscode)) {
-                currentUserRole = 'admin';
-                alert("Welcome Admin!");
-                break;
-            } else if (passcode === String(guestPasscode)) {
-                currentUserRole = 'guest';
-                alert("Welcome Guest!");
-                break;
-            } else {
-                alert("Invalid passcode. Please try again.");
-            }
+        .select2-dropdown {
+            min-width: 200px;
         }
-        // Once authenticated, load the data and apply restrictions
-        load();
-        applyRoleRestrictions(currentUserRole);
-    }
+    </style>
 
-    // MODIFIED: Helper to initialize Select2 with custom placeholders per filter
-    function initSelect2Filters() {
-        // Destroy existing instances to avoid duplication
-        $('.select2-hidden-accessible').each(function() {
-            $(this).select2('destroy');
-        });
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-        // Define custom placeholder text for each filter
-        const placeholders = {
-            filterMonth: " Month...",
-            filterDate: " Date...",
-            filterUid: " UID...",
-            filterName: " Name...",
-            filterDescription: " Description...",
-            filterAmount: " Amount..."
+    <!-- Added: jQuery and Select2 JS (required for search) -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
+            authDomain: "vacantt-1.firebaseapp.com",
+            databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
+            projectId: "vacantt-1",
+            storageBucket: "vacantt-1.appspot.com",
+            messagingSenderId: "484618102811",
+            appId: "1:484618102811:web:84b701f47c601ee07af0be"
         };
 
-        // Initialize each filter with its own placeholder
-        for (let id in placeholders) {
-            $(`#${id}`).select2({
-                theme: 'bootstrap-5',
-                width: '100%',
-                placeholder: placeholders[id],
-                allowClear: false,
-                dropdownParent: $('.d-flex.align-items-end.mb-3')[0] // Ensure dropdownParent is a DOM element
-            });
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        console.log('Firebase initialized, database ready', database);
+
+        const db = database.ref("miamalaShilo");
+        const usersDb = database.ref("Users"); // Reference to your Users node
+
+        let datePickerInstance;
+        let currentUserRole = null;
+        let allTransactionsData = []; // Global variable to store all fetched data
+
+        // Function to show/hide elements based on role
+        function applyRoleRestrictions(role) {
+            const addTransactionButton = document.querySelector('.btn.btn-primary.ms-auto');
+            if (role === 'guest') {
+                if (addTransactionButton) {
+                    addTransactionButton.style.display = 'none';
+                }
+            } else if (role === 'admin') {
+                if (addTransactionButton) {
+                    addTransactionButton.style.display = ''; // Show for admin
+                }
+            }
+            // Edit/Delete buttons dynamically handled in filterTable based on role
         }
-        // Reattach filter event after Select2 change
-        $('#filterMonth, #filterDate, #filterUid, #filterName, #filterDescription, #filterAmount').off('change').on('change', function() {
-            filterTable();
-        });
-    }
 
-    function load() {
-        db.on("value", snap => {
+        // Passcode prompt function
+        async function promptForPasscode() {
+            let passcode = null;
+            let adminPasscode = null;
+            let guestPasscode = null;
 
-            let data = snap.val();
+            await usersDb.once("value", snap => {
+                const usersData = snap.val();
+                if (usersData) {
+                    adminPasscode = usersData.Admin;
+                    guestPasscode = usersData.Guest;
+                }
+            });
 
-            let tbody = document.getElementById("tbody");
+            while (true) {
+                passcode = prompt("Please enter your passcode:");
+                if (passcode === null) {
+                    alert("Passcode is required to access the application.");
+                    continue;
+                }
 
-            tbody.innerHTML = "";
+                if (passcode === String(adminPasscode)) {
+                    currentUserRole = 'admin';
+                    alert("Welcome Admin!");
+                    break;
+                } else if (passcode === String(guestPasscode)) {
+                    currentUserRole = 'guest';
+                    alert("Welcome Guest!");
+                    break;
+                } else {
+                    alert("Invalid passcode. Please try again.");
+                }
+            }
+            // Once authenticated, load the data and apply restrictions
+            load();
+            applyRoleRestrictions(currentUserRole);
+        }
 
-            let total = 0;
+        // MODIFIED: Helper to initialize Select2 with custom placeholders per filter
+        function initSelect2Filters() {
+            // Destroy existing instances to avoid duplication
+            $('.select2-hidden-accessible').each(function() {
+                $(this).select2('destroy');
+            });
 
-            // IMPORTANT FIX: sn is now incremented within filterTable()
-            // and `sn` is not used directly here for table rendering anymore.
-            // The row serial numbers will be assigned after filtering.
+            const placeholders = {
+                filterMonth: " Month...",
+                filterDate: " Date...",
+                filterUid: " UID...",
+                filterName: " Name...",
+                filterDescription: " Description...",
+                filterAmount: " Amount..."
+            };
 
-            /* IMPORTANT FIX */
-            if (!data) {
-                // If no data, ensure filters are initialized and table is empty
-                initSelect2Filters(); // Initialize Select2 even with no data
-                filterTable(); // Call filterTable to reset SN and total
-                return;
+            for (let id in placeholders) {
+                const element = $(`#${id}`);
+                element.select2({
+                    theme: 'bootstrap-5',
+                    width: '100%',
+                    placeholder: placeholders[id],
+                    allowClear: false,
+                    // Ensure dropdownParent correctly targets an existing element
+                    dropdownParent: $('.d-flex.align-items-end.mb-3')[0] || document.body // Fallback to body
+                });
             }
 
-            // Convert data object to an array for easier filtering/sorting later if needed
-            const dataArray = Object.keys(data).map(key => ({
-                key,
-                ...data[key]
-            }));
+            // Reattach filter event after Select2 change
+            $('#filterMonth, #filterDate, #filterUid, #filterName, #filterDescription, #filterAmount').off('change').on('change', function() {
+                filterTable();
+            });
+        }
 
-            // Store the data array for filtering
-            // (You might want to store this globally or pass it to filterTable)
-            // For simplicity, we'll re-process in filterTable for now, but
-            // for performance, it's better to process the full data once.
-
+        // NEW FUNCTION: Handles populating filters and then rendering the table
+               function renderTableAndFilters(dataArray) {
             let months = new Set();
             let dates = new Set();
             let uids = new Set();
             let names = new Set();
-            let descriptions = new Set();
+            // Create two sets for descriptions: one for filters, one for the modal
+            let filterDescriptions = new Set();
+            let allModalDescriptions = new Set(); // For the modal, including predefined
+
             let amounts = new Set();
 
             dataArray.forEach(r => {
@@ -403,279 +234,280 @@
                 dates.add(r.date);
                 uids.add(r.uid);
                 names.add(r.name);
-                descriptions.add(r.description);
+                filterDescriptions.add(r.description); // Add to filter set
+                allModalDescriptions.add(r.description); // Add to modal set
                 amounts.add(r.amount);
             });
 
-            // Add predefined description options
-            descriptions.add("Tegemeza_26");
-            descriptions.add("ADA_26");
-            descriptions.add("Dodoma_26");
-            descriptions.add("Kwaya Record_26");
-
-            let filterMonth = document.getElementById("filterMonth");
-            filterMonth.innerHTML = '<option value="">Months</option>';
-            Array.from(months).sort((a, b) => a - b).forEach(m => {
-                filterMonth.innerHTML += `<option value="${m}">${m}</option>`;
-            });
-
-            let filterDate = document.getElementById("filterDate");
-            filterDate.innerHTML = '<option value="">Dates</option>';
-            Array.from(dates).sort().forEach(d => {
-                filterDate.innerHTML += `<option value="${d}">${d}</option>`;
-            });
-
-            let filterUid = document.getElementById("filterUid");
-            filterUid.innerHTML = '<option value="">UIDs</option>';
-            Array.from(uids).sort().forEach(u => {
-                filterUid.innerHTML += `<option value="${u}">${u}</option>`;
-            });
-
-            let filterName = document.getElementById("filterName");
-            filterName.innerHTML = '<option value="">Names</option>';
-            Array.from(names).sort().forEach(n => {
-                filterName.innerHTML += `<option value="${n}">${n}</option>`;
-            });
-
-            let filterDescription = document.getElementById("filterDescription");
-            filterDescription.innerHTML = '<option value="">Descriptions</option>';
-            Array.from(descriptions).sort().forEach(desc => {
-                filterDescription.innerHTML += `<option value="${desc}">${desc}</option>`;
-            });
-
-            let modalDescription = document.getElementById("description");
-            modalDescription.innerHTML = '<option value="">Select Description</option>';
-            Array.from(descriptions).sort().forEach(desc => {
-                modalDescription.innerHTML += `<option value="${desc}">${desc}</option>`;
-            });
-
-            let filterAmount = document.getElementById("filterAmount");
-            filterAmount.innerHTML = '<option value="">Amounts</option>';
-            Array.from(amounts).map(a => Number(a)).sort((a, b) => a - b).forEach(a => {
-                filterAmount.innerHTML += `<option value="${a}">${a.toLocaleString()}</option>`;
-            });
-
-            // Initialize Select2 after populating options
-            initSelect2Filters();
-            // Call filterTable to apply any pre-selected filters and update ppleCont
-            filterTable(); // This will now render the table with proper SNs
-        })
-    }
-
-    // Call promptForPasscode when the script loads
-    // This will handle authentication and then call load()
-    promptForPasscode();
-
-    function parseDateForInput(dateText) {
-        if (!dateText) return "";
-        // Already dd-mm-yyyy form
-        if (/^\d{2}-\d{2}-\d{4}$/.test(dateText)) return dateText;
-        // Try to parse and convert to dd-mm-yyyy
-        const d = new Date(dateText);
-        if (!isNaN(d)) {
-            let day = String(d.getDate()).padStart(2, '0');
-            let month = String(d.getMonth() + 1).padStart(2, '0');
-            let year = d.getFullYear();
-            return `${day}-${month}-${year}`;
-        }
-        return "";
-    }
-
-    function save() {
-        // Only allow admins to save
-        if (currentUserRole !== 'admin') {
-            alert("You do not have permission to add transactions.");
-            return;
-        }
-
-        let uid = document.getElementById("uid").value;
-        let name = document.getElementById("name").value;
-        let description = document.getElementById("description").value;
-        let amount = document.getElementById("amount").value;
-        let dateValue = document.getElementById("date").value;
-
-        let date = dateValue || (() => {
-            let d = new Date();
-            let day = String(d.getDate()).padStart(2, '0');
-            let month = String(d.getMonth() + 1).padStart(2, '0');
-            let year = d.getFullYear();
-            return `${day}-${month}-${year}`;
-        })();
-
-        db.push({
-            date,
-            uid,
-            name,
-            description,
-            amount
-        }).then(() => {
-            load();
-        });
-
-        clear();
-
-        document.getElementById("updateBtn").classList.add("d-none");
-
-        bootstrap.Modal.getInstance(document.getElementById('modal')).hide();
-    }
+            // Add predefined description options ONLY to the modal's description set
+            allModalDescriptions.add("Tegemeza_26");
+            allModalDescriptions.add("ADA_26");
+            allModalDescriptions.add("Dodoma_26");
+            allModalDescriptions.add("Kwaya Record_26");
+            allModalDescriptions.add("Sadaka kwayaVjn_26");
+            allModalDescriptions.add("Sadaka Mkesha_26");
 
 
-    function edit(k) {
-        // Only allow admins to edit
-        if (currentUserRole !== 'admin') {
-            alert("You do not have permission to edit transactions.");
-            return;
-        }
+            const filterElements = {
+                filterMonth: { set: months, placeholder: "All Months" },
+                filterDate: { set: dates, placeholder: "All Dates" },
+                filterUid: { set: uids, placeholder: "All UIDs" },
+                filterName: { set: names, placeholder: "All Names" },
+                // Use filterDescriptions for the description filter
+                filterDescription: { set: filterDescriptions, placeholder: "All Descriptions" },
+                filterAmount: { set: amounts, placeholder: "All Amounts" }
+            };
 
-        db.child(k).once("value", snap => {
-            let d = snap.val();
-
-            document.getElementById("key").value = k;
-            document.getElementById("uid").value = d.uid;
-            document.getElementById("name").value = d.name;
-            document.getElementById("description").value = d.description;
-            document.getElementById("amount").value = d.amount;
-            let parsedDate = parseDateForInput(d.date);
-
-            // Set the value of the actual date input (which flatpickr hides)
-            document.getElementById("date").value = parsedDate;
-
-            // IMPORTANT: Tell the flatpickr instance to update its displayed date
-            if (datePickerInstance) { // Ensure datePickerInstance exists
-                datePickerInstance.setDate(parsedDate, true); // true as second argument updates the input field and triggers change event
+            // Populate filter dropdowns and preserve current selections
+            for (const id in filterElements) {
+                const element = document.getElementById(id);
+                const currentSelection = element.value;
+                element.innerHTML = `<option value="">${filterElements[id].placeholder}</option>`;
+                const sortedValues = Array.from(filterElements[id].set).sort((a, b) => {
+                    // Custom sort for amounts to handle numbers, default for others
+                    if (id === 'filterAmount') {
+                        return Number(a) - Number(b);
+                    }
+                    return String(a).localeCompare(String(b));
+                });
+                sortedValues.forEach(val => {
+                    element.innerHTML += `<option value="${val}">${id === 'filterAmount' ? Number(val).toLocaleString() : val}</option>`;
+                });
+                element.value = currentSelection; // Restore selection
             }
 
+            // Populate modalDescription separately with allModalDescriptions
+            let modalDescription = document.getElementById("description");
+            // Ensure modalDescription exists before trying to access its value
+            if (modalDescription) {
+                const currentModalDescriptionValue = modalDescription.value;
+                modalDescription.innerHTML = '<option value="">Select Description</option>';
+                Array.from(allModalDescriptions).sort().forEach(desc => {
+                    modalDescription.innerHTML += `<option value="${desc}">${desc}</option>`;
+                });
+                modalDescription.value = currentModalDescriptionValue; // Restore selection
+            }
 
-            document.getElementById("updateBtn").classList.remove("d-none");
-            document.getElementById("saveBtn").classList.add("d-none");
-
-            new bootstrap.Modal(document.getElementById('modal')).show();
-        })
-    }
-
-    function update() {
-        // Only allow admins to update
-        if (currentUserRole !== 'admin') {
-            alert("You do not have permission to update transactions.");
-            return;
+            // Initialize Select2 after populating options (this also refreshes them)
+            initSelect2Filters();
+            // Call filterTable to render the table based on current filters and the stored data
+            filterTable();
         }
 
-        let k = document.getElementById("key").value;
-
-        let date = document.getElementById("date").value || (() => {
-            let d = new Date();
-            let day = String(d.getDate()).padStart(2, '0');
-            let month = String(d.getMonth() + 1).padStart(2, '0');
-            let year = d.getFullYear();
-            return `${day}-${month}-${year}`;
-        })();
-
-        db.child(k).update({
-            uid: document.getElementById("uid").value,
-            name: document.getElementById("name").value,
-            description: document.getElementById("description").value,
-            amount: document.getElementById("amount").value,
-            date
-        }).then(() => {
-            load();
-        });
-
-        clear();
-
-        bootstrap.Modal.getInstance(document.getElementById('modal')).hide();
-    }
-
-    function removeRow(k) {
-        // Only allow admins to delete
-        if (currentUserRole !== 'admin') {
-            alert("You do not have permission to delete transactions.");
-            return;
-        }
-
-        if (confirm("Delete record?")) {
-            db.child(k).remove().then(() => {
-                load();
-            }).catch((err) => {
-                console.error('Delete error:', err);
+        // MODIFIED: `load` function to fetch data once and then render using the new `renderTableAndFilters`
+        function load() {
+            db.on("value", snap => {
+                const data = snap.val();
+                if (data) {
+                    allTransactionsData = Object.keys(data).map(key => ({
+                        key,
+                        ...data[key]
+                    }));
+                } else {
+                    allTransactionsData = [];
+                }
+                renderTableAndFilters(allTransactionsData); // Use the new function to handle filters and table rendering
             });
         }
-    }
 
-    function clear() {
-        // Clear function should be accessible to all to clear the form
-        document.getElementById("uid").value = "";
-        document.getElementById("name").value = "";
-        document.getElementById("description").value = "";
-        document.getElementById("amount").value = "";
-        document.getElementById("date").value = ""; // Clear the hidden input
-        document.getElementById("key").value = "";
+        // Call promptForPasscode when the script loads
+        // This will handle authentication and then call load()
+        // Wrapped in DOMContentLoaded to ensure promptForPasscode isn't called before DOM is fully ready
+        document.addEventListener('DOMContentLoaded', promptForPasscode);
 
-        // IMPORTANT: Tell the flatpickr instance to clear its displayed date
-        if (datePickerInstance) { // Ensure datePickerInstance exists
-            datePickerInstance.clear(true); // true to trigger change event
-            datePickerInstance.setDate(new Date()); // Set back to default or empty if preferred
+
+        function parseDateForInput(dateText) {
+            if (!dateText) return "";
+            if (/^\d{2}-\d{2}-\d{4}$/.test(dateText)) return dateText; // Already dd-mm-yyyy form
+            const d = new Date(dateText);
+            if (!isNaN(d.getTime())) { // Check for valid date
+                let day = String(d.getDate()).padStart(2, '0');
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+            }
+            return "";
         }
 
-        document.getElementById("updateBtn").classList.add("d-none");
-        document.getElementById("saveBtn").classList.remove("d-none");
-    }
+        // MODIFIED: `save` function to remove redundant `load()` call and properly close modal
+        function save() {
+            if (currentUserRole !== 'admin') {
+                alert("You do not have permission to add transactions.");
+                return;
+            }
 
-    // Initialize flatpickr only once and assign to the global datePickerInstance variable
-    // This resolves the "datePicker is declared two times" issue.
-    datePickerInstance = flatpickr("#date", {
-        dateFormat: "d-m-Y",
-        defaultDate: new Date()
-    });
+            let uid = document.getElementById("uid").value;
+            let name = document.getElementById("name").value;
+            let description = document.getElementById("description").value;
+            let amount = document.getElementById("amount").value;
+            let dateValue = document.getElementById("date").value;
 
-    function filterTable() {
-        let selectedMonth = document.getElementById("filterMonth").value;
-        let selectedDate = document.getElementById("filterDate").value;
-        let selectedUid = document.getElementById("filterUid").value;
-        let selectedName = document.getElementById("filterName").value;
-        let selectedDescription = document.getElementById("filterDescription").value;
-        let selectedAmount = document.getElementById("filterAmount").value;
+            let date = dateValue || (() => {
+                let d = new Date();
+                let day = String(d.getDate()).padStart(2, '0');
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+            })();
 
-        let tbody = document.getElementById("tbody");
-        let rows = Array.from(tbody.querySelectorAll("tr")); // Get current rows
+            db.push({
+                date,
+                uid,
+                name,
+                description,
+                amount
+            }).then(() => {
+                // The `db.on("value")` listener in `load()` will automatically re-render the table.
+                // No explicit `load()` call needed here.
+            });
 
-        let filteredTotal = 0;
-        let visibleRowCount = 0;
-        let currentSN = 1; // Reset SN counter for filtered view
+            clear();
+            document.getElementById("updateBtn").classList.add("d-none");
+            $('#modal').modal('hide'); // Proper way to close Bootstrap modal
+        }
 
-        // Clear existing rows to rebuild with correct SNs and visibility
-        tbody.innerHTML = '';
 
-        // Fetch the raw data again (or pass it from load if optimized)
-        db.once("value", snap => {
-            const allData = snap.val();
-            if (!allData) return;
+        // MODIFIED: `edit` function logic for updating the modal and flatpickr
+        function edit(k) {
+            if (currentUserRole !== 'admin') {
+                alert("You do not have permission to edit transactions.");
+                return;
+            }
 
-            const filteredData = Object.keys(allData)
-                .map(key => ({ key, ...allData[key] }))
-                .filter(r => {
-                    let dateStr = r.date;
-                    let parts = dateStr.split(/[-\/]/);
-                    let monthNum;
-                    if (parts.length === 3) {
-                        if (parts[0].length === 4) { // assume YYYY-MM-DD
-                            monthNum = parseInt(parts[1]);
-                        } else { // assume DD-MM-YYYY
-                            monthNum = parseInt(parts[1]);
-                        }
-                    } else {
-                        let dateObj = new Date(dateStr);
-                        monthNum = dateObj.getMonth() + 1;
-                    }
+            db.child(k).once("value", snap => {
+                let d = snap.val();
 
-                    let amountNum = Number(r.amount) || 0; // Ensure amount is numeric for comparison
+                document.getElementById("key").value = k;
+                document.getElementById("uid").value = d.uid;
+                document.getElementById("name").value = d.name;
+                document.getElementById("description").value = d.description;
+                document.getElementById("amount").value = d.amount;
+                let parsedDate = parseDateForInput(d.date);
 
-                    return (!selectedMonth || String(monthNum) === selectedMonth) &&
-                           (!selectedDate || r.date === selectedDate) &&
-                           (!selectedUid || r.uid === selectedUid) &&
-                           (!selectedName || r.name === selectedName) &&
-                           (!selectedDescription || r.description === selectedDescription) &&
-                           (!selectedAmount || String(amountNum) === selectedAmount);
+                // Set the value of the actual date input
+                document.getElementById("date").value = parsedDate;
+
+                // IMPORTANT: Tell the flatpickr instance to update its displayed date
+                if (datePickerInstance) {
+                    datePickerInstance.setDate(parsedDate, true);
+                }
+
+                document.getElementById("updateBtn").classList.remove("d-none");
+                document.getElementById("saveBtn").classList.add("d-none");
+
+                // Ensure modal is shown correctly
+                new bootstrap.Modal(document.getElementById('modal')).show();
+            });
+        }
+
+        // MODIFIED: `update` function to remove redundant `load()` call and properly close modal
+        function update() {
+            if (currentUserRole !== 'admin') {
+                alert("You do not have permission to update transactions.");
+                return;
+            }
+
+            let k = document.getElementById("key").value;
+
+            let date = document.getElementById("date").value || (() => {
+                let d = new Date();
+                let day = String(d.getDate()).padStart(2, '0');
+                let month = String(d.getMonth() + 1).padStart(2, '0');
+                let year = d.getFullYear();
+                return `${day}-${month}-${year}`;
+            })();
+
+            db.child(k).update({
+                uid: document.getElementById("uid").value,
+                name: document.getElementById("name").value,
+                description: document.getElementById("description").value,
+                amount: document.getElementById("amount").value,
+                date
+            }).then(() => {
+                // The `db.on("value")` listener in `load()` will automatically re-render the table.
+                // No explicit `load()` call needed here.
+            });
+
+            clear();
+            $('#modal').modal('hide'); // Proper way to close Bootstrap modal
+        }
+
+        // MODIFIED: `removeRow` function to remove redundant `load()` call
+        function removeRow(k) {
+            if (currentUserRole !== 'admin') {
+                alert("You do not have permission to delete transactions.");
+                return;
+            }
+
+            if (confirm("Delete record?")) {
+                db.child(k).remove().then(() => {
+                    // The `db.on("value")` listener in `load()` will automatically re-render the table.
+                    // No explicit `load()` call needed here.
+                }).catch((err) => {
+                    console.error('Delete error:', err);
                 });
+            }
+        }
+
+        function clear() {
+            document.getElementById("uid").value = "";
+            document.getElementById("name").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("amount").value = "";
+            document.getElementById("date").value = ""; // Clear the hidden input
+            document.getElementById("key").value = "";
+
+            if (datePickerInstance) {
+                datePickerInstance.clear(true);
+                datePickerInstance.setDate(new Date()); // Set back to default or empty if preferred
+            }
+
+            document.getElementById("updateBtn").classList.add("d-none");
+            document.getElementById("saveBtn").classList.remove("d-none");
+        }
+
+
+        // MODIFIED: `filterTable` to use `allTransactionsData` instead of re-fetching
+        function filterTable() {
+            let selectedMonth = document.getElementById("filterMonth").value;
+            let selectedDate = document.getElementById("filterDate").value;
+            let selectedUid = document.getElementById("filterUid").value;
+            let selectedName = document.getElementById("filterName").value;
+            let selectedDescription = document.getElementById("filterDescription").value;
+            let selectedAmount = document.getElementById("filterAmount").value;
+
+            let tbody = document.getElementById("tbody");
+            tbody.innerHTML = ''; // Clear existing rows to rebuild
+
+            let filteredTotal = 0;
+            let visibleRowCount = 0;
+            let currentSN = 1;
+
+            // Use the globally stored data `allTransactionsData`
+            const filteredData = allTransactionsData.filter(r => {
+                let dateStr = r.date;
+                let parts = dateStr.split(/[-\/]/);
+                let monthNum;
+                if (parts.length === 3) {
+                    if (parts[0].length === 4) { // assume YYYY-MM-DD
+                        monthNum = parseInt(parts[1]);
+                    } else { // assume DD-MM-YYYY
+                        monthNum = parseInt(parts[1]);
+                    }
+                } else {
+                    let dateObj = new Date(dateStr);
+                    monthNum = dateObj.getMonth() + 1;
+                }
+
+                let amountNum = Number(r.amount) || 0;
+
+                return (!selectedMonth || String(monthNum) === selectedMonth) &&
+                       (!selectedDate || r.date === selectedDate) &&
+                       (!selectedUid || r.uid === selectedUid) &&
+                       (!selectedName || r.name === selectedName) &&
+                       (!selectedDescription || r.description === selectedDescription) &&
+                       (!selectedAmount || String(amountNum) === selectedAmount);
+            });
 
             filteredData.forEach(r => {
                 let amountNum = Number(r.amount) || 0;
@@ -696,7 +528,6 @@
                     monthNum = dateObj.getMonth() + 1;
                 }
 
-                // Dynamically create buttons based on current user role
                 let controlButtons = '';
                 if (currentUserRole === 'admin') {
                     controlButtons = `
@@ -708,7 +539,6 @@
                         </button>
                     `;
                 } else if (currentUserRole === 'guest') {
-                    // Guests cannot edit or delete, so disabled buttons
                     controlButtons = `
                         <button class="btn btn-sm btn-warning me-1" disabled>
                             Edit
@@ -737,56 +567,166 @@
 
             document.getElementById("total").innerText = filteredTotal.toLocaleString();
             document.getElementById("ppleCont").innerText = visibleRowCount;
+        }
+
+    </script>
+
+</head>
+
+<body class="p-2">
+    <div class="nav-links">
+        <a href="index.html">Home</a>
+        <a href="miamalaShilo.html" class="active">Miamala</a>
+        <a href="Ada_CFDs_26.html">Ada_26</a>
+        <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a>
+        <a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
+        <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a>
+        <a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
+    </div>
+
+    <div class="container-fluid">
+        <div class="d-flex align-items-end mb-3">
+            <div class="me-2">
+                <select class="form-select" id="filterMonth">
+                    <option value="">All Months</option>
+                </select>
+            </div>
+            <div class="me-2">
+                <select class="form-select" id="filterDate">
+                    <option value="">All Dates</option>
+                </select>
+            </div>
+            <div class="me-2">
+                <select class="form-select" id="filterUid">
+                    <option value="">All UIDs</option>
+                </select>
+            </div>
+            <div class="me-2">
+                <select class="form-select" id="filterName">
+                    <option value="">All Names</option>
+                </select>
+            </div>
+            <div class="me-2">
+                <select class="form-select" id="filterDescription">
+                    <option value="">All Descriptions</option>
+                </select>
+            </div>
+            <div class="me-2 d-flex align-items-center">
+                <select class="form-select me-2" id="filterAmount">
+                    <option value="">All Amounts</option>
+                </select>
+                <button class="btn btn-outline-secondary" id="clearFilters" title="Clear all filters">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <button class="btn btn-primary ms-auto" data-bs-toggle="modal" data-bs-target="#modal" onclick="clear()">
+                Add Transaction
+            </button>
+        </div>
+
+        <div id="tableContainer" style="max-height: 75vh; overflow:scroll;margin-bottom: 0;">
+            <table id="myTable" class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>SN</th>
+                        <th>MONTH</th>
+                        <th>DATE</th>
+                        <th>UID</th>
+                        <th>NAME</th>
+                        <th>DESCRIPTION</th>
+                        <th>AMOUNT</th>
+                        <th>CONTROLS</th>
+                    </tr>
+                </thead>
+
+                <tbody id="tbody"></tbody>
+
+                <tfoot>
+                    <tr>
+                        <th colspan="4"></th>
+                        <th id="ppleCont">0</th>
+                        <th class="text-end">TOTAL</th>
+                        <th id="total">0</th>
+                    </tr>
+                </tfoot>
+
+            </table>
+        </div>
+
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5>Transaction</h5>
+                    <button class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="key">
+
+                    <input class="form-control mb-2" id="uid" placeholder="UID">
+                    <input class="form-control mb-2" id="name" placeholder="Name">
+                    <select class="form-select mb-2" id="description">
+                        <option value="">Select Description</option>
+                        <!-- Options will be populated here -->
+                    </select>
+                    <input class="form-control mb-2" id="amount" type="number" placeholder="Amount">
+                    <input class="form-control mb-2" id="date" type="text" placeholder="Date">
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <button class="btn btn-success" id="saveBtn" onclick="save()">Save</button>
+                    <button class="btn btn-warning d-none" id="updateBtn" onclick="update()">Update</button>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+     <script>
+        // DOMContentLoaded ensures the DOM is fully loaded before these scripts run.
+        $(document).ready(function() {
+            // Initialize flatpickr on the date input
+            datePickerInstance = flatpickr("#date", {
+                dateFormat: "d-m-Y",
+                defaultDate: new Date()
+            });
+
+            // Initialize Select2 filters after the DOM and jQuery are ready
+            // and after filter options might have been populated by renderTableAndFilters.
+            initSelect2Filters();
+
+            // Event listener for clearFilters button, ensuring the element exists
+            document.getElementById("clearFilters").addEventListener("click", () => {
+                // Reset native select elements and then trigger change for Select2 to update
+                document.getElementById("filterMonth").value = "";
+                document.getElementById("filterDate").value = "";
+                document.getElementById("filterUid").value = "";
+                document.getElementById("filterName").value = "";
+                document.getElementById("filterDescription").value = "";
+                document.getElementById("filterAmount").value = "";
+
+                // Use jQuery to trigger the 'change' event which Select2 listens to
+                $('#filterMonth, #filterDate, #filterUid, #filterName, #filterDescription, #filterAmount').val('').trigger('change');
+                // The 'change' trigger from .val('').trigger('change') will call filterTable.
+            });
+
+            // NEW FIX: Reset modal state after it's fully hidden
+            $('#modal').on('hidden.bs.modal', function () {
+                clear(); // Call clear function to reset fields and button states
+            });
         });
-    }
-
-
-    document.getElementById("filterMonth").addEventListener("change", filterTable);
-    document.getElementById("filterDate").addEventListener("change", filterTable);
-    document.getElementById("filterUid").addEventListener("change", filterTable);
-    document.getElementById("filterName").addEventListener("change", filterTable);
-    document.getElementById("filterDescription").addEventListener("change", filterTable);
-    document.getElementById("filterAmount").addEventListener("change", filterTable);
-    document.getElementById("clearFilters").addEventListener("click", () => {
-        document.getElementById("filterMonth").value = "";
-        document.getElementById("filterDate").value = "";
-        document.getElementById("filterUid").value = "";
-        document.getElementById("filterName").value = "";
-        document.getElementById("filterDescription").value = "";
-        document.getElementById("filterAmount").value = "";
-        // Also reset Select2 visual state
-        $('#filterMonth, #filterDate, #filterUid, #filterName, #filterDescription, #filterAmount').val('').trigger('change');
-        // No need to call filterTable here, the 'change' trigger from .val('').trigger('change') will call it.
-    });
-</script>
-
-<style>
-    /* Add this CSS to your existing style block */
-    #myTable {
-        position: relative; /* Establish a stacking context for the table */
-        z-index: 1; /* Ensure table has a stacking context above other content */
-    }
-    #myTable thead {
-        position: sticky;
-        top: 0;
-        background: #f8f9fa;
-        z-index: 10; /* Give the sticky header a higher z-index */
-    }
-    #myTable tfoot {
-        position: sticky;
-        bottom: 0;
-        background: #f8f9fa;
-        z-index: 10; /* Give the sticky footer a higher z-index */
-    }
-    /* Ensure table-control-cell content (buttons) respects z-index of table cells */
-    .table-control-cell {
-        min-width: 140px;
-        width: 140px;
-        /* Add relative positioning to the cell itself if its children are absolutely positioned */
-        /* position: relative; */
-        z-index: 5; /* Ensure cells are below sticky header/footer but above normal content */
-    }
-</style>
+    </script>
 
 </body>
+
 </html>
