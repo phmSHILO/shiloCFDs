@@ -5,290 +5,98 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PHM-SHILO Kigamboni Dynamic Table</title>
     <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-           
-        /* Make the entire thead sticky */
-        #myTable thead {
-            position: sticky;
-            top: 0;
-            z-index: 10; /* Ensure the header stays on top of scrolling content */
-            background-color: white; /* Add a background color to prevent content from showing through */
-        }
-        /* Remove sticky from individual th elements to avoid conflict */
-        #myTable thead th {
-            position: unset !important;
-        }
-
-        #myTable tfoot td{position: sticky;bottom:0}
-        /* Custom styles for the table headers and footer based on the image */
-        .table-custom-header th {
-            background-color: #f8f9fa; /* Light grey for headers, adjust if needed */
-            font-weight: bold;
-            vertical-align: middle;
-        }
-        /* This is the adjusted rule for table-responsive */
-        .table-responsive {
-            overflow-x: auto !important; /* Allow horizontal scrolling for the table itself */
-            overflow-y: auto; /* Keep vertical scrolling for long tables */
-        }
-        /* Style for the "DENI" column header (yellow background from image) */
-        .table-custom-header th.deni-header {
-            background-color: #ffc107; /* Bootstrap yellow */
-            color: #000;
-        }
-        /* Style for the footer cells with background colors */
-        .table-footer-summary td {
-            font-weight: bold;
-        }
-        .table-footer-summary .total-sum {
-            background-color: hsl(115, 100%, 51%); /* Bootstrap yellow */
-            color: #000;
-        }
-        .table-footer-summary .total-debt {
-            background-color: #dc3545; /* Bootstrap red */
-            color: #fff;
-        }
-        /* Centering text in header cells that span */
-        .text-center-th {
-            text-align: center;
-        }
-        /* Prevent names from wrapping into new lines */
-        .name-col {
-            white-space: nowrap;
-            display: block; /* Make span fill the td for click area */
-            cursor: pointer; /* Indicate it's clickable */
-            padding: .25rem .5rem; /* Match Bootstrap table padding for better click area */
-        }
-        .name-col:focus {
-            outline: 2px solid #007bff; /* Highlight on focus */
-            background-color: #f0f8ff; /* Light background on edit */
-        }
-        .text-danger {
-            color: #dc3545 !important; /* Ensure red color for debt */
-        }
-        /* Style for interactive cells */
-        .month-cell {
-            cursor: pointer; /* Indicate it's clickable */
-            user-select: none; /* Prevent text selection on double-click */
-        }
-        .month-cell:hover {
-            background-color: #e2e6ea; /* Light hover effect */
-        }
-        /* Adjustments for compact filter inputs */
-        .filter-input-group > .form-control:first-child,
-        .filter-input-group > .input-group-text:first-child {
-            border-top-left-radius: var(--bs-border-radius);
-            border-bottom-left-radius: var(--bs-border-radius);
-        }
-        .filter-input-group > .form-control:last-child,
-        .filter-input-group > .input-group-text:last-child {
-            border-top-right-radius: var(--bs-border-radius);
-            border-bottom-right-radius: var(--bs-border-radius);
-        }
-        /* Smaller inputs for number filters */
-        .filter-input-compact {
-            max-width: 90px; /* Adjust as needed for Jumla/Deni inputs */
-            text-align: center;
-        }
-        .filter-name-input {
-            max-width: 200px; /* Adjust as needed for Name input */
-        }
-        
-        .nav-links {
-            background: white;
-            border-bottom: 1px solid #dee2e6;
-            padding: 3px 12px;
-            margin-bottom: 10px;
-            display: flex;
-            gap: 6px;
-            justify-content: flex-start;
-            align-items: center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-            flex-wrap: wrap; /* Navigation links will now wrap to avoid horizontal overflow */
-        }
-        .nav-links a {
-            text-decoration: none;
-            color: #495057;
-            font-weight: 500;
-            padding: 4px 12px;
-            border-radius: 20px;
-            transition: all 0.2s;
-            font-size: 16px;
-            white-space: nowrap;
-        }
-        .nav-links a:hover {
-            background: #e9ecef;
-            color: #0d6efd;
-        }
-        .nav-links a.active {
-            background: #0d6efd;
-            color: white;
-        }
-
-        table tbody td:nth-child(15) {
-    
-    color: blue;
-}
-
-
-        /* --- Custom Responsive Styles Added During Debugging --- */
-
-        /* Filter Inputs Adjustments for Mobile */
-        @media (max-width: 767px) { /* Bootstrap's 'md' breakpoint */
-            .filter-input-group > .input-group-text.ms-2 {
-                margin-left: 0 !important; /* Remove margin between stacked inputs */
-                margin-top: 5px; /* Add some vertical spacing */
-            }
-            .filter-input-group > .form-control,
-            .filter-input-group > .input-group-text {
-                border-radius: var(--bs-border-radius) !important; /* Reset border-radius for stacked items */
-            }
-            /* Adjust button spacing if they stack */
-            .filter-input-group .btn.ms-2 {
-                margin-left: 0 !important;
-                margin-top: 5px;
-            }
-            /* Allow filter inputs to take full width */
-            .filter-input-compact,
-            .filter-name-input {
-                max-width: 100% !important; 
-            }
-        }
-
-        /* Table Adjustments for Mobile (allowing horizontal scroll for table) */
-        @media (max-width: 767px) {
-            #myTable {
-                table-layout: auto; /* Allow browser to determine column widths naturally */
-                width: 100%; /* Still try to take available width */
-            }
-            #myTable th,
-            #myTable td {
-                padding: 0.5rem 0.2rem; /* Restore slightly more readable padding */
-                font-size: 0.8em; /* Restore slightly more readable font size */
-                white-space: nowrap; /* Keep content on single line */
-                overflow: visible; /* Ensure content is visible, will scroll with table */
-                text-overflow: clip; /* Ensure content is visible, will scroll with table */
-            }
-            /* Specific adjustments for 'JINA KAMILI' column */
-            #myTable .name-col {
-                white-space: nowrap !important;
-                overflow: visible;
-                text-overflow: clip;
-                min-width: unset; /* Remove explicit min-width */
-            }
-            /* Remove explicit width settings for better natural flow */
-            #myTable thead tr:nth-child(1) th,
-            #myTable thead tr:nth-child(2) th {
-                width: unset;
-            }
-            .btn-sm {
-                padding: 0.25rem 0.5rem;
-                font-size: 0.75em;
-            }
-        }
+        #myTable thead th { position: sticky; top: 0; z-index: 10; background-color: white; border-bottom: 2px solid #dee2e6; }
+        #myTable tfoot td { position: sticky; bottom: 0; background-color: white; border-top: 2px solid #dee2e6; font-weight: bold; }
+        .table-custom-header th { background-color: #f8f9fa; font-weight: bold; vertical-align: middle; }
+        .table-responsive { overflow-x: auto !important; overflow-y: auto; }
+        .table-custom-header th.deni-header { background-color: #ffc107; color: #000; }
+        .table-footer-summary .total-sum { background-color: hsl(115, 100%, 51%); color: #000; }
+        .table-footer-summary .total-debt { background-color: #dc3545; color: #fff; }
+        .text-center-th { text-align: center; }
+        .name-col { white-space: nowrap; cursor: pointer; padding: .25rem .5rem; display: block; width: 100%; text-align: left; }
+        .text-danger { color: #dc3545 !important; }
+        .month-cell { cursor: pointer; user-select: none; }
+        .month-cell:hover { background-color: #e2e6ea; }
+        .nav-links { background: white; border-bottom: 1px solid #dee2e6; padding: 3px 12px; margin-bottom: 10px; display: flex; gap: 6px; flex-wrap: wrap; }
+        .nav-links a { text-decoration: none; color: #495057; font-weight: 500; padding: 4px 12px; border-radius: 20px; font-size: 16px; }
+        .nav-links a.active { background: #0d6efd; color: white; }
     </style>
 </head>
 <body>
     <div class="nav-links">
-        <a href="index.html">Home</a>
-        <a href="miamalaShilo.html">Miamala</a>
-        <a href="Ada_CFDs_26.html" class="active">Ada_26</a>
-        <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a>
-        <a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
-        <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a>
-        <a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
-        <a href="SeminaDodoma_26.html">Semina Dodoma 26</a>
+        <a href="index.html">Home</a><a href="miamalaShilo.html">Miamala</a><a href="Ada_CFDs_26.html" class="active">Ada_26</a>
+        <a href="VjnKwayaRecord_26.html">Kwaya Record 26</a><a href="Sadaka_VjnChoir_26.html">Sadaka Kwaya 26</a>
+        <a href="Sadaka_CFDs_Mkesha_26.html">Sadaka Mkesha 26</a><a href="Tegemeza_CFDs_26.html">Tegemeza Vjn 26</a>
+        <a href="SeminaDodoma_26.html">Semina Dodoma 26</a><a href="Upendo_Mr Mahongo_26.html">Upendo_Mr Mahongo</a>
     </div>
 
 <div class="container-fluid mt-1">
     <h3 class="text-center mb-3">PHM-SHILO KIGAMBONI [IDARA YA VIJANA] ADA YA KILA MWEZI (Tsh 1,000/=) 2026</h3>
-
-    <!-- Controls Section -->
     <div class="row mb-2">
-        <div class="col-md-8">
-            <!-- Filter section - Combined and Compact -->
+        <div class="col-md-7">
             <div class="p-3 border rounded bg-light h-100">
-                
-                <div class="input-group filter-input-group">
+                <div class="input-group">
                     <span class="input-group-text">Name:</span>
-                    <input type="text" id="filterNameInput" class="form-control filter-name-input" placeholder="Search name" aria-label="Filter by name" list="nameSuggestions">
+                    <input type="text" id="filterNameInput" class="form-control" placeholder="Search" list="nameSuggestions">
                     <datalist id="nameSuggestions"></datalist>
-
                     <span class="input-group-text ms-2">Jumla:</span>
-                    <input type="number" id="filterJumlaInput" class="form-control filter-input-compact" placeholder="Total" aria-label="Filter by Jumla" list="jumlaSuggestions">
+                    <input type="number" id="filterJumlaInput" class="form-control" list="jumlaSuggestions">
                     <datalist id="jumlaSuggestions"></datalist>
-
                     <span class="input-group-text ms-2">Deni:</span>
-                    <input type="number" id="filterDeniInput" class="form-control filter-input-compact" placeholder="Debt" aria-label="Filter by Deni" list="deniSuggestions">
+                    <input type="number" id="filterDeniInput" class="form-control" list="deniSuggestions">
                     <datalist id="deniSuggestions"></datalist>
-
                     <button class="btn btn-secondary ms-2" type="button" id="applyAllFiltersButton">Filter</button>
-                    <button class="btn btn-outline-secondary" type="button" id="clearAllFiltersButton">Clear All</button>
+                    <button class="btn btn-outline-secondary" type="button" id="clearAllFiltersButton">Clear</button>
                 </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <!-- Input for adding new names -->
+        <div class="col-md-5">
             <div class="p-3 border rounded bg-light h-100">
-                
                 <div class="input-group">
-                    <input type="text" id="newNameInput" class="form-control" placeholder="Enter full name" aria-label="New participant's name">
+                    <input type="text" id="newUidInput" class="form-control" placeholder="UID" style="max-width: 100px;">
+                    <input type="text" id="newNameInput" class="form-control" placeholder="Full name">
                     <button class="btn btn-primary" type="button" id="addNameButton">Add Name</button>
                 </div>
             </div>
         </div>
     </div>
 
-
-    <div class="table-responsive" style="max-height: 74vh; overflow:scroll;margin-top: 1em;margin-bottom: 0;">
+    <div class="table-responsive" style="max-height: 74vh; overflow:scroll; margin-top: 1em;">
         <table id="myTable" class="table table-bordered table-striped text-center table-sm">
             <thead class="table-custom-header">
                 <tr>
-                    <th rowspan="2" class="text-center-th">S/N</th>
-                    <th rowspan="2" class="text-center-th">JINA KAMILI</th>
-                    <th colspan="12" class="text-center-th">KIASI KILICHOCHANGIWA KWA MWEZI HUSIKA</th>
-                    <th rowspan="2" class="text-center-th">JUMLA</th>
-                    <th rowspan="2" class="text-center-th deni-header">DENI</th>
-                    <!-- Added Action Column Header -->
-                    <th rowspan="2" class="text-center-th">Action</th>
+                    <th rowspan="2">S/N</th><th rowspan="2">UID</th><th rowspan="2">JINA KAMILI</th>
+                    <th colspan="12">KIASI KILICHOCHANGIWA KWA MWEZI HUSIKA</th>
+                    <th rowspan="2">JUMLA</th><th rowspan="2" class="deni-header">DENI</th><th rowspan="2">Action</th>
                 </tr>
                 <tr>
-                    <th class="text-center-th">JAN (01)</th>
-                    <th class="text-center-th">FEB (02)</th>
-                    <th class="text-center-th">MAR (03)</th>
-                    <th class="text-center-th">APR (04)</th>
-                    <th class="text-center-th">MAY (05)</th>
-                    <th class="text-center-th">JUN (06)</th>
-                    <th class="text-center-th">JUL (07)</th>
-                    <th class="text-center-th">AUG (08)</th>
-                    <th class="text-center-th">SEP (09)</th>
-                    <th class="text-center-th">OCT (10)</th>
-                    <th class="text-center-th">NOV (11)</th>
-                    <th class="text-center-th">DEC (12)</th>
+                    <th>JAN</th><th>FEB</th><th>MAR</th><th>APR</th><th>MAY</th><th>JUN</th>
+                    <th>JUL</th><th>AUG</th><th>SEP</th><th>OCT</th><th>NOV</th><th>DEC</th>
                 </tr>
             </thead>
-            <tbody id="tableBody">
-                <!-- Data will be loaded here from Firebase -->
-            </tbody>
+            <tbody id="tableBody"></tbody>
             <tfoot class="table-footer-summary">
-                <tr>
-                    <!-- Colspan adjusted for the new 'Action' column -->
-                    <td colspan="14" class="text-end"></td> 
-                    <td class="total-sum" id="grandTotalSum">0</td>
-                    <td class="total-debt" id="grandTotalDebt">0</td>
-                </tr>
-            </tfoot>
+    <tr>
+        <!-- Colspan 15 covers: SN, UID, Jina Kamili, and 12 Months -->
+        <td colspan="15" class="text-end">GRAND TOTAL:</td> 
+        <!-- This cell is under JUMLA -->
+        <td class="total-sum" id="grandTotalSum" style="background-color: #90ee90;">0</td>
+        <!-- This cell is under DENI -->
+        <td class="total-debt" id="grandTotalDebt" style="background-color: #ffcccb; color: #000;">0</td>
+        <!-- This cell is under ACTION -->
+        <td></td>
+    </tr>
+</tfoot>
         </table>
     </div>
-
 </div>
 
-<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+js
 <script>
-    // Your Firebase configuration
     const firebaseConfig = {
         apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
         authDomain: "vacantt-1.firebaseapp.com",
@@ -298,487 +106,164 @@
         messagingSenderId: "484618102811",
         appId: "1:484618102811:web:84b701f47c601ee07af0be"
     };
-
-    // Initialize Firebase
     const app = firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const tableDataRef = database.ref('Ada_CFDs_26'); // Reference to your table data
-
+    const tableDataRef = database.ref('Ada_CFDs_26');
     const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-    const initialDebtPerPerson = 12000;
-    const contributionAmount = 1000; // Fixed contribution amount
+    const initialDebtPerPerson = 12000, contributionAmount = 1000;
+    
+    let allFirebaseData = [];
+    window.userRole = null;
 
-    // Declare a global variable to store the user's role
-    window.userRole = null; // 'admin', 'guest', or null
-
-    // Function to prompt for passcode and authenticate
-    window.authenticateUser = async function() { // Made global
+    window.authenticateUser = async function() {
         let isAuthenticated = false;
         while (!isAuthenticated) {
             const enteredPasscode = prompt("Please enter your passcode:");
-            if (enteredPasscode === null) {
-                // User cancelled the prompt, keep them out
-                continue; // Keep prompting
-            }
-
-            // Get passcodes from Firebase
-            const usersRef = database.ref('Users');
-            const snapshot = await usersRef.once('value');
+            if (enteredPasscode === null) return;
+            const snapshot = await database.ref('Users').once('value');
             const firebaseUsers = snapshot.val();
-
             if (firebaseUsers) {
-                const adminPasscode = String(firebaseUsers.Admin);
-                const guestPasscode = String(firebaseUsers.Guest);
-
-                if (enteredPasscode === adminPasscode) {
-                    window.userRole = 'admin';
-                    isAuthenticated = true;
-                } else if (enteredPasscode === guestPasscode) {
-                    window.userRole = 'guest';
-                    isAuthenticated = true;
-                } else {
-                    alert("Invalid passcode. Please try again.");
-                }
-            } else {
-                alert("Error: User passcodes not found in Firebase. Please check configuration.");
-                return; // Exit if passcodes are not configured
+                if (enteredPasscode === String(firebaseUsers.Admin)) { window.userRole = 'admin'; isAuthenticated = true; }
+                else if (enteredPasscode === String(firebaseUsers.Guest)) { window.userRole = 'guest'; isAuthenticated = true; }
+                else alert("Invalid passcode.");
             }
         }
-
-        // Show main content after successful authentication
         document.querySelector('.container-fluid.mt-1').style.display = 'block';
-
-        // Apply permissions based on role
-        window.applyRolePermissions(); // Call global function
-
-        // Initial data load - will be called within applyRolePermissions
-        // applyAllFilters();
+        initFirebaseListener();
     };
 
-    // New function to apply permissions based on role
-    window.applyRolePermissions = function() { // Made global
-        const addNameButton = document.getElementById('addNameButton');
-        const newNameInput = document.getElementById('newNameInput');
-
-        if (window.userRole === 'guest') {
-            // Guests cannot add new names
-            if (addNameButton) addNameButton.disabled = true;
-            if (newNameInput) newNameInput.disabled = true;
-            if (newNameInput) newNameInput.placeholder = "Guests cannot add names";
-
-        } else if (window.userRole === 'admin') {
-            // Admins have full permissions
-            if (addNameButton) addNameButton.disabled = false;
-            if (newNameInput) newNameInput.disabled = false;
-            if (newNameInput) newNameInput.placeholder = "Enter full name";
-        }
-
-        // Re-load table data to apply delete button permissions and interactive cell permissions
-        window.applyAllFilters(); // Call global function
-    };
-
-
-    // MODIFIED FUNCTION: Function to delete a person from Firebase and the table
-    window.deletePerson = async function(firebaseId) {
-        // Only allow deleting if user is an admin
-        if (window.userRole !== 'admin') {
-            console.log("Guests cannot delete persons.");
-            alert("You do not have permission to delete data.");
-            return;
-        }
-
-        if (!firebaseId) {
-            console.error("No Firebase ID provided for deletion.");
-            return;
-        }
-
-        const personRef = tableDataRef.child(firebaseId);
-        const snapshot = await personRef.once('value');
-        const personData = snapshot.val();
-        const personName = personData ? personData.name : 'Unknown';
-
-        if (confirm(`Are you sure you want to delete ${personName} and all their contributions? This action cannot be undone.`)) {
-            personRef.remove()
-                .then(() => {
-                    console.log(`Successfully deleted person: ${personName} (${firebaseId})`);
-                    // The table will automatically re-render due to loadTableData's on 'value' listener
-                })
-                .catch(error => {
-                    console.error("Error deleting person:", error);
-                    alert("Failed to delete person. Please check console for details.");
-                });
-        }
-    };
-
-    // MODIFIED FUNCTION: Function to toggle contribution for a specific month with password check
-    window.toggleContribution = function(event) {
-        // Only allow toggling if user is an admin
-        if (window.userRole !== 'admin') {
-            console.log("Guests cannot toggle contributions.");
-            return;
-        }
-
-        const cell = event.currentTarget; // The <td> element that was double-clicked
-        const firebaseId = cell.dataset.firebaseId;
-        const month = cell.dataset.month;
-
-        if (!firebaseId || !month) {
-            console.error("Missing firebaseId or month data attribute on cell.", cell);
-            return;
-        }
-
-        const currentAmount = cell.textContent.trim().replace(/,/g, ''); // Remove commas for comparison
-        let newAmount = null; // Use null to remove the entry from Firebase
-
-        if (currentAmount === String(contributionAmount)) { // Compare as strings
-            newAmount = null; // Remove contribution
-        } else {
-            newAmount = contributionAmount; // Add contribution
-        }
-
-        // Update specific month's contribution for the person in Firebase
-        tableDataRef.child(firebaseId).child('contributions').update(
-            { [month]: newAmount }
-        )
-        .then(() => {
-            console.log(`Updated ${month} contribution for ${firebaseId} to ${newAmount}`);
-            // The table will automatically re-render due to loadTableData's on 'value' listener
-        })
-        .catch(error => {
-            console.error("Error updating contribution:", error);
-            alert("Failed to update contribution. Please check console for details.");
-        });
-    };
-
-    // MODIFIED FUNCTION: Function to make the name span editable
-    window.makeNameEditable = function(event) {
-        // Only allow editing if user is an admin
-        if (window.userRole !== 'admin') {
-            console.log("Guests cannot edit names.");
-            return;
-        }
-
-        const nameSpan = event.currentTarget;
-
-        if (nameSpan.contentEditable !== 'true') {
-            nameSpan.contentEditable = 'true';
-            nameSpan.focus(); // Put cursor into the span
-
-            // Add event listener for when focus is lost
-            nameSpan.onblur = window.saveEditedName; // Call global function
-
-            // Add event listener for 'Enter' key press
-            nameSpan.onkeypress = function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault(); // Prevent new line
-                    nameSpan.blur(); // Trigger blur event to save
-                }
-            };
-        }
-    };
-
-    // Function to save the edited name to Firebase (no change here, as permissions are checked in makeNameEditable)
-    window.saveEditedName = function(event) { // Made global
-        const nameSpan = event.currentTarget;
-        const firebaseId = nameSpan.dataset.firebaseId;
-        const newName = nameSpan.textContent.trim();
-        const originalName = nameSpan.dataset.originalName; // Store original name for revert
-
-        // Validate the new name
-        if (!newName) {
-            alert("Name cannot be empty! Reverting to original name.");
-            nameSpan.textContent = originalName; // Revert to original
-            nameSpan.contentEditable = 'false';
-            nameSpan.onblur = null;
-            nameSpan.onkeypress = null;
-            return;
-        }
-
-        // Only update if the name has actually changed
-        if (newName !== originalName) {
-            tableDataRef.child(firebaseId).update({ name: newName })
-                .then(() => {
-                    console.log(`Successfully updated name for ${firebaseId} to ${newName}`);
-                    // The table will automatically re-render due to loadTableData's on 'value' listener
-                })
-                .catch(error => {
-                    console.error("Error updating name:", error);
-                    alert("Failed to update name. Please check console for details.");
-                    nameSpan.textContent = originalName; // Revert on error
-                });
-        }
-
-        // Clean up: make non-editable and remove listeners
-        nameSpan.contentEditable = 'false';
-        nameSpan.onblur = null;
-        nameSpan.onkeypress = null;
-    };
-
-
-    // MODIFIED FUNCTION: Function to load data from Firebase and populate the table (with permission checks for interactive elements)
-    window.loadTableData = function(filterName = null, filterJumla = null, filterDeni = null) { // Made global
-        const tableBody = document.getElementById('tableBody');
-        const grandTotalSumElement = document.getElementById('grandTotalSum');
-        const grandTotalDebtElement = document.getElementById('grandTotalDebt');
-        const nameSuggestionsDatalist = document.getElementById('nameSuggestions');
-        const jumlaSuggestionsDatalist = document.getElementById('jumlaSuggestions');
-        const deniSuggestionsDatalist = document.getElementById('deniSuggestions');
-
-        tableDataRef.off('value'); // Detach previous listener if any
+    function initFirebaseListener() {
         tableDataRef.on('value', (snapshot) => {
-            tableBody.innerHTML = ''; // Clear existing table rows
-            nameSuggestionsDatalist.innerHTML = ''; // Clear existing name suggestions
-            jumlaSuggestionsDatalist.innerHTML = ''; // Clear existing Jumla suggestions
-            deniSuggestionsDatalist.innerHTML = ''; // Clear existing Deni suggestions
-
-            let serialNumber = 1;
-            let currentGrandTotalSum = 0;
-            let currentGrandTotalDebt = 0;
-
+            allFirebaseData = [];
             if (snapshot.exists()) {
-                const allData = Object.entries(snapshot.val()).map(([key, value]) => ({ firebaseId: key, ...value }));
-                
-                const uniqueNames = new Set();
-                const uniqueJumlas = new Set();
-                const uniqueDenis = new Set();
-
-                allData.forEach(person => {
-                    // Calculate person's totals for suggestion datalists and filtering
-                    let personMonthlyTotal = 0;
-                    months.forEach(month => {
-                        const amount = person.contributions?.[month] || 0;
-                        personMonthlyTotal += parseInt(amount);
-                    });
-                    const currentCalculatedDebt = initialDebtPerPerson - personMonthlyTotal;
-
-                    if (person.name) uniqueNames.add(person.name);
-                    uniqueJumlas.add(personMonthlyTotal);
-                    uniqueDenis.add(currentCalculatedDebt);
-
-                    // Add these calculated totals to the person object for consistent filtering below
-                    person.calculatedJumla = personMonthlyTotal;
-                    person.calculatedDeni = currentCalculatedDebt;
-                });
-
-                // Populate datalists
-                uniqueNames.forEach(name => {
-                    const option = document.createElement('option');
-                    option.value = name;
-                    nameSuggestionsDatalist.appendChild(option);
-                });
-                uniqueJumlas.forEach(jumla => {
-                    const option = document.createElement('option');
-                    option.value = jumla;
-                    jumlaSuggestionsDatalist.appendChild(option);
-                });
-                uniqueDenis.forEach(deni => {
-                    const option = document.createElement('option');
-                    option.value = deni;
-                    deniSuggestionsDatalist.appendChild(option);
-                });
-
-
-                let filteredData = allData.filter(person => {
-                    // Apply name filter
-                    const nameMatches = filterName ? person.name.toLowerCase().includes(filterName.toLowerCase()) : true;
-
-                    // Apply Jumla filter (exact match if provided)
-                    const jumlaMatches = (filterJumla === null || person.calculatedJumla === filterJumla);
-
-                    // Apply Deni filter (exact match if provided)
-                    const deniMatches = (filterDeni === null || person.calculatedDeni === filterDeni);
-
-                    return nameMatches && jumlaMatches && deniMatches;
-                });
-
-                if (filteredData.length === 0 && (filterName || filterJumla !== null || filterDeni !== null)) {
-                    const row = tableBody.insertRow();
-                    const cell = row.insertCell();
-                    cell.colSpan = 17; // Adjusted colSpan for the new 'Action' column
-                    cell.textContent = `No results found for the applied filters.`;
-                } else if (filteredData.length === 0 && !filterName && filterJumla === null && filterDeni === null) { // No data at all in DB
-                    const row = tableBody.insertRow();
-                    const cell = row.insertCell();
-                    cell.colSpan = 17; // Adjusted colSpan for the new 'Action' column
-                    cell.textContent = "No data available. Add some data using the console or the form above.";
-                }
-
-                filteredData.forEach(person => {
-                    const row = tableBody.insertRow();
-                    row.insertCell().textContent = serialNumber++;
-                    const nameCell = row.insertCell();
-                    const nameSpan = document.createElement('span');
-                    nameSpan.className = "text-start name-col";
-                    nameSpan.textContent = person.name;
-                    nameSpan.dataset.firebaseId = person.firebaseId; // Store Firebase ID
-                    nameSpan.dataset.originalName = person.name; // Store original name for revert
-                    
-                    // Only add click listener if user is admin
-                    if (window.userRole === 'admin') {
-                        nameSpan.addEventListener('click', window.makeNameEditable); // Call global function
-                    }
-
-                    nameCell.appendChild(nameSpan);
-
-                    let personMonthlyTotal = 0;
-                    months.forEach(month => {
-                        const amount = person.contributions?.[month] || ''; // Get amount or empty string
-                        const monthCell = row.insertCell();
-                        monthCell.textContent = amount ? amount.toLocaleString() : '';
-                        monthCell.classList.add('month-cell'); // Add class for styling and event listener
-                        monthCell.dataset.firebaseId = person.firebaseId; // Store Firebase ID
-                        monthCell.dataset.month = month; // Store month name
-                        
-                        // Only add dblclick listener if user is admin
-                        if (window.userRole === 'admin') {
-                            monthCell.addEventListener('dblclick', window.toggleContribution); // Call global function
-                        }
-
-                        personMonthlyTotal += (amount ? parseInt(amount) : 0);
-                    });
-
-                    const currentDebt = initialDebtPerPerson - personMonthlyTotal;
-
-                    row.insertCell().textContent = personMonthlyTotal > 0 ? personMonthlyTotal.toLocaleString() : '-';
-                    const debtCell = row.insertCell();
-                    debtCell.textContent = currentDebt.toLocaleString();
-                    debtCell.classList.add('text-danger'); // Apply red color for debt
-
-                    // Add Delete button cell
-                    const deleteCell = row.insertCell();
-                    // Only create and append delete button if user is admin
-                    if (window.userRole === 'admin') {
-                        const deleteButton = document.createElement('button');
-                        deleteButton.className = 'btn btn-danger btn-sm'; // Bootstrap button styling
-                        deleteButton.textContent = 'Delete';
-                        deleteButton.title = `Delete ${person.name}`;
-                        deleteButton.dataset.firebaseId = person.firebaseId; // Store Firebase ID
-                        deleteButton.addEventListener('click', () => window.deletePerson(person.firebaseId)); // Call global function
-                        deleteCell.appendChild(deleteButton);
-                    }
-
-
-                    currentGrandTotalSum += personMonthlyTotal; // Sum for filtered view
-                    currentGrandTotalDebt += currentDebt; // Sum for filtered view
-                });
-            } else {
-                const row = tableBody.insertRow();
-                const cell = row.insertCell();
-                cell.colSpan = 17; // Adjusted colSpan for the new 'Action' column
-                cell.textContent = "No data available. Add some data using the console or the form above.";
+                allFirebaseData = Object.entries(snapshot.val()).map(([key, val]) => ({ 
+                    firebaseId: key, ...val, name: val.name || "Unknown" 
+                }));
             }
-
-            grandTotalSumElement.textContent = currentGrandTotalSum.toLocaleString();
-            grandTotalDebtElement.textContent = currentGrandTotalDebt.toLocaleString();
-        }, (error) => {
-            console.error("Error loading data:", error);
-            tableBody.innerHTML = '<tr><td colspan="17" class="text-danger">Error loading data. Check console for details.</td></tr>'; // Adjusted colSpan
+            window.applyAllFilters();
         });
-    };
+    }
 
-    // Function to add a new person to the Firebase database
-    window.addNewPerson = function() { // Made global
-        // Only allow adding if user is an admin
-        if (window.userRole !== 'admin') {
-            console.log("Guests cannot add new persons.");
-            alert("You do not have permission to add new names.");
-            return;
-        }
-
-        const newNameInput = document.getElementById('newNameInput');
-        const newName = newNameInput.value.trim();
-
-        if (newName) {
-            const newPersonData = {
-                name: newName,
-                contributions: {} // Start with empty contributions
-            };
-
-            tableDataRef.push(newPersonData)
-                .then(() => {
-                    console.log(`Successfully added new person: ${newName}`);
-                    newNameInput.value = ''; // Clear the input field
-                })
-                .catch(error => {
-                    console.error("Error adding new person:", error);
-                    alert("Failed to add new person. Please check console for details.");
-                });
-        } else {
-            alert("Please enter a name before adding!");
-        }
-    };
-
-    // Function to add example data to Firebase (for initial setup/testing)
-    window.addExampleData = function() { // Made global
-        const exampleUsers = [
-            { name: "TITO JOHN", contributions: {} },
-            { name: "TUMU BONIFACE", contributions: {} },
-            { name: "WEMA MGALA", contributions: {} },
-            { name: "WILLIAM HABIL", contributions: {} },
-            { name: "WINJUKA JUSTIN", contributions: { FEB: 1000, MAR: 1000 } },
-            { name: "YAKOBO SAITOTI", contributions: {} },
-            { name: "YUSUPH MWAKIPESILE", contributions: { JAN: 1000, FEB: 1000, MAR: 1000, APR: 1000, MAY: 1000 } },
-            { name: "ALICIA ADRIAN", contributions: { JAN: 1000 } },
-            { name: "DORCAS KONDO", contributions: {} },
-            { name: "LUGANO DAUD", contributions: {} }
-        ];
-
-        // This will add each user to the Firebase Realtime Database under 'Ada_CFDs_26'
-        // If you run this multiple times, it will create duplicate entries.
-        // It's primarily for initial data seeding.
-        exampleUsers.forEach(user => {
-            tableDataRef.push(user)
-                .then(() => {
-                    console.log(`Added ${user.name} to Firebase.`);
-                })
-                .catch(error => {
-                    console.error("Error adding data:", error);
-                });
-        });
-    };
-
-    // --- Filter Orchestration Functions ---
-
-    // Main function to apply all filters and reload table
-    window.applyAllFilters = function() { // Made global
-        const filterName = document.getElementById('filterNameInput').value.trim();
-        const filterJumla = document.getElementById('filterJumlaInput').value.trim();
-        const filterDeni = document.getElementById('filterDeniInput').value.trim();
+    window.renderTable = function(filteredData) {
+        const tableBody = document.getElementById('tableBody');
+        tableBody.innerHTML = '';
         
-        window.loadTableData( // Call global function
-            filterName || null,
-            filterJumla ? parseInt(filterJumla) : null,
-            filterDeni ? parseInt(filterDeni) : null
-        );
-    };
+        let serialNumber = 1;
+        let grandTotalSum = 0;
+        let grandTotalDebt = 0; // This will store the summation of the DENI column
 
-    // Function to clear all filter inputs
-    window.clearAllFilters = function() { // Made global
-        document.getElementById('filterNameInput').value = '';
-        document.getElementById('filterJumlaInput').value = '';
-        document.getElementById('filterDeniInput').value = '';
-        window.applyAllFilters(); // Reload table with no filters, call global function
-    };
+        filteredData.forEach(p => {
+            let personSum = 0;
+            months.forEach(m => {
+                const val = p.contributions?.[m];
+                personSum += (val ? parseInt(val) : 0);
+            });
+            
+            // Calculate the Deni for this specific row
+            const rowDeni = initialDebtPerPerson - personSum;
 
+            // Simple summation of the column values
+            grandTotalSum += personSum;
+            grandTotalDebt += rowDeni;
 
-    // MODIFIED: Event listeners setup
-    document.addEventListener('DOMContentLoaded', () => {
-        // Initially hide the main content
-        document.querySelector('.container-fluid.mt-1').style.display = 'none';
-        window.authenticateUser(); // Start the authentication process, call global function
+            const row = tableBody.insertRow();
+            row.insertCell().textContent = serialNumber++;
+            row.insertCell().textContent = p.uid || '-';
+            
+            const nameCell = row.insertCell();
+            const nSpan = document.createElement('span');
+            nSpan.className = "name-col"; 
+            nSpan.textContent = p.name;
+            if (window.userRole === 'admin') nSpan.onclick = window.makeNameEditable;
+            nameCell.appendChild(nSpan);
 
-        // These event listeners are now added here, but their functionality will be gate-kept by userRole
-        document.getElementById('addNameButton').addEventListener('click', window.addNewPerson); // Call global function
-        document.getElementById('newNameInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') {
-                window.addNewPerson(); // Call global function
+            months.forEach(m => {
+                const amt = p.contributions?.[m] || '';
+                const c = row.insertCell();
+                c.textContent = amt ? amt.toLocaleString() : '';
+                c.className = 'month-cell';
+                if (window.userRole === 'admin') {
+                    c.ondblclick = () => {
+                        const currentAmt = p.contributions?.[m];
+                        const newAmt = (currentAmt == contributionAmount) ? null : contributionAmount;
+                        tableDataRef.child(p.firebaseId).child('contributions').update({ [m]: newAmt });
+                    };
+                }
+            });
+
+            // Jumla cell
+            row.insertCell().textContent = personSum > 0 ? personSum.toLocaleString() : '-';
+            
+            // Deni cell
+            const dCell = row.insertCell();
+            dCell.textContent = rowDeni.toLocaleString();
+            dCell.className = 'text-danger fw-bold';
+
+            // Action cell
+            const actCell = row.insertCell();
+            if (window.userRole === 'admin') {
+                const btn = document.createElement('button');
+                btn.className = 'btn btn-danger btn-sm'; btn.textContent = 'Delete';
+                btn.onclick = () => { if(confirm("Delete record?")) tableDataRef.child(p.firebaseId).remove(); };
+                actCell.appendChild(btn);
             }
         });
-        document.getElementById('applyAllFiltersButton').addEventListener('click', window.applyAllFilters); // Call global function
-        document.getElementById('clearAllFiltersButton').addEventListener('click', window.clearAllFilters); // Call global function
-        document.getElementById('filterNameInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') { window.applyAllFilters(); } }); // Call global function
-        document.getElementById('filterJumlaInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') { window.applyAllFilters(); } }); // Call global function
-        document.getElementById('filterDeniInput').addEventListener('keypress', function (e) { if (e.key === 'Enter') { window.applyAllFilters(); } }); // Call global function
+
+        // UPDATE TOTALS IN THE FOOTER
+        const sumEl = document.getElementById('grandTotalSum');
+        const debtEl = document.getElementById('grandTotalDebt');
+        
+        if (sumEl) sumEl.textContent = grandTotalSum.toLocaleString();
+        if (debtEl) debtEl.textContent = grandTotalDebt.toLocaleString();
+        
+        if (filteredData.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="18" class="p-3">No matching results found.</td></tr>';
+        }
+    };
+
+    window.applyAllFilters = function() {
+        const fName = document.getElementById('filterNameInput').value.trim().toLowerCase();
+        const fJumla = document.getElementById('filterJumlaInput').value.trim();
+        const fDeni = document.getElementById('filterDeniInput').value.trim();
+
+        const filtered = allFirebaseData.filter(p => {
+            let pSum = 0;
+            months.forEach(m => pSum += parseInt(p.contributions?.[m] || 0));
+            const pDeni = initialDebtPerPerson - pSum;
+
+            const nameMatch = !fName || p.name.toLowerCase().includes(fName);
+            const jumlaMatch = !fJumla || pSum === parseInt(fJumla);
+            const deniMatch = !fDeni || pDeni === parseInt(fDeni);
+
+            return nameMatch && jumlaMatch && deniMatch;
+        });
+
+        window.renderTable(filtered);
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelector('.container-fluid.mt-1').style.display = 'none';
+        window.authenticateUser();
+
+        document.getElementById('addNameButton').onclick = () => {
+            const u = document.getElementById('newUidInput'), n = document.getElementById('newNameInput');
+            if (u.value && n.value) {
+                tableDataRef.push({ uid: u.value, name: n.value, contributions: {} });
+                u.value = ''; n.value = '';
+            } else alert("UID and Name are required!");
+        };
+
+        // Filter event listeners
+        document.getElementById('filterNameInput').oninput = window.applyAllFilters;
+        document.getElementById('filterJumlaInput').oninput = window.applyAllFilters;
+        document.getElementById('filterDeniInput').oninput = window.applyAllFilters;
+        document.getElementById('applyAllFiltersButton').onclick = window.applyAllFilters;
+        document.getElementById('clearAllFiltersButton').onclick = () => {
+            document.getElementById('filterNameInput').value = '';
+            document.getElementById('filterJumlaInput').value = '';
+            document.getElementById('filterDeniInput').value = '';
+            window.applyAllFilters();
+        };
     });
 </script>
 </body>
