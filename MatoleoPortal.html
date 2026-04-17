@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Matoleo Yangu Portal</title>
+    <style>
+        :root {
+            --primary-color: #1a3a5a;
+            --accent-color: #d9534f;
+            --bg-color: #f0f2f5;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 10px 5px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .report-container {
+            background-color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 850px;
+            box-sizing: border-box;
+        }
+
+        .portal-header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .portal-header h1 { 
+            margin: 0; 
+            font-size: 1.2rem; 
+            color: var(--primary-color); 
+            text-transform: uppercase; 
+        }
+
+        .portal-header h2 { 
+            margin: 2px 0 0 0; 
+            font-size: 0.85rem; 
+            color: #666; 
+        }
+
+        .search-btn {
+            display: block;
+            width: 100%;
+            max-width: 200px;
+            margin: 15px auto;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .info-section { 
+            margin-bottom: 15px; 
+            border: 1px solid #f0f0f0;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .info-row { 
+            margin-bottom: 8px; 
+            display: flex; 
+            font-size: 0.9rem;
+        }
+
+        .label { width: 50px; font-weight: bold; color: #555; }
+        .value { 
+            border-bottom: 1px solid #eee; 
+            flex: 1; 
+            padding-left: 5px; 
+            font-weight: 600; 
+            text-transform: none; /* Ensures no automatic uppercase */
+        }
+
+        .table-container {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            table-layout: fixed;
+        }
+
+        th, td { 
+            border: 1px solid #ddd; 
+            padding: 8px 4px;
+            font-size: 0.75rem;
+            word-wrap: break-word;
+            text-align: center;
+        }
+
+        th { 
+            background-color: #f8f9fa; 
+            color: var(--primary-color);
+            font-weight: bold; 
+        }
+
+        .col-sn { width: 25px; }
+        .col-name { width: auto; text-align: left; }
+        .col-amt { width: 70px; }
+        .col-debt { width: 60px; }
+
+        tr.total-row { font-weight: bold; background-color: #fcfcfc; }
+        .amount-cell { font-weight: 600; }
+        .debt-value { color: var(--accent-color); }
+
+        @media (min-width: 600px) {
+            th, td { font-size: 0.95rem; padding: 12px; }
+            .portal-header h1 { font-size: 1.8rem; }
+            .col-sn { width: 50px; }
+            .col-amt { width: 150px; }
+            .col-debt { width: 120px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="report-container">
+    <div class="portal-header">
+        <h1>MATOLEO YANGU PORTAL</h1>
+        <h2>phm shilo (CFDs)</h2>
+    </div>
+
+    <button class="search-btn" onclick="startProcess()">Ingiza UID / Tafuta</button>
+
+    <div class="info-section">
+        <div class="info-row">
+            <span class="label">JINA:</span> 
+            <span id="display-name" class="value">---</span>
+        </div>
+        <div class="info-row">
+            <span class="label">UID:</span> 
+            <span id="display-uid" class="value">---</span>
+        </div>
+    </div>
+
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-sn">SN</th>
+                    <th class="col-name">AINA</th>
+                    <th class="col-amt">KIASI</th>
+                    <th class="col-debt">DENI</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td style="text-align:left">ADA_26</td>
+                    <td id="amt-ada" class="amount-cell">0</td>
+                    <td id="debt-ada" class="debt-value">0</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td style="text-align:left">TEGEMEZA_26</td>
+                    <td id="amt-tegemeza">0</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td style="text-align:left">SEMINA DODOMA</td>
+                    <td id="amt-dodoma">0</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td style="text-align:left">UPENDO</td>
+                    <td id="amt-upendo">0</td>
+                    <td></td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="2" style="text-align:right">JUMLA:</td>
+                    <td id="total-kiasi">0</td>
+                    <td id="total-deni" class="debt-value">0</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+
+<script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
+      authDomain: "vacantt-1.firebaseapp.com",
+      databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
+      projectId: "vacantt-1",
+      storageBucket: "vacantt-1.firebasestorage.app",
+      messagingSenderId: "484618102811",
+      appId: "1:484618102811:web:84b701f47c601ee07af0be"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    function startProcess() {
+        const inputUid = prompt("Tafadhali weka UID yako:");
+        // Search using the input provided (keeping case flexibility)
+        if (inputUid) fetchAllData(inputUid.trim());
+    }
+
+    async function fetchAllData(targetUid) {
+        // Reset 
+        const ids = ['amt-ada', 'amt-tegemeza', 'amt-dodoma', 'amt-upendo', 'debt-ada', 'total-deni', 'total-kiasi'];
+        ids.forEach(id => document.getElementById(id).innerText = "0");
+        document.getElementById('display-name').innerText = "---";
+        document.getElementById('display-uid').innerText = "---";
+
+        let totalK = 0;
+        let userName = "---";
+        let actualUid = "---";
+        let found = false;
+
+        const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
+        // Secondary check in case they typed different casing than the DB
+        const getLower = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid.toLowerCase()).once('value');
+
+        try {
+            // Check both original and lowercase to be user-friendly
+            const snapshots = await Promise.all([get('Ada_CFDs_26'), get('SeminaDodoma_26'), get('Tegemeza_CFDs_26'), get('Upendo_Mr Mahongo_26')]);
+            
+            // If nothing found with exact case, try lowercase
+            let results = snapshots;
+            if (!snapshots.some(s => s.exists())) {
+                results = await Promise.all([getLower('Ada_CFDs_26'), getLower('SeminaDodoma_26'), getLower('Tegemeza_CFDs_26'), getLower('Upendo_Mr Mahongo_26')]);
+            }
+
+            const [a, b, c, d] = results;
+
+            let adaSum = 0;
+            if (a.exists()) {
+                const rec = Object.values(a.val())[0];
+                if (rec.contributions) Object.values(rec.contributions).forEach(v => adaSum += parseFloat(v) || 0);
+                userName = rec.name; 
+                actualUid = rec.uid; // Get exact case from DB
+                found = true;
+            }
+
+            const process = (snap, elId) => {
+                if (snap.exists()) {
+                    const rec = Object.values(snap.val())[0];
+                    const v = parseFloat(rec.amount) || 0;
+                    document.getElementById(elId).innerText = v.toLocaleString();
+                    totalK += v; 
+                    userName = rec.name; 
+                    actualUid = rec.uid; // Get exact case from DB
+                    found = true;
+                }
+            };
+
+            process(b, 'amt-dodoma');
+            process(c, 'amt-tegemeza');
+            process(d, 'amt-upendo');
+
+            if (found) {
+                const debt = 12000 - adaSum;
+                document.getElementById('amt-ada').innerText = adaSum.toLocaleString();
+                document.getElementById('debt-ada').innerText = (debt > 0 ? debt : 0).toLocaleString();
+                document.getElementById('total-deni').innerText = (debt > 0 ? debt : 0).toLocaleString();
+                totalK += adaSum;
+                
+                document.getElementById('display-name').innerText = userName;
+                document.getElementById('display-uid').innerText = actualUid; // Display actual DB value
+                document.getElementById('total-kiasi').innerText = totalK.toLocaleString();
+            } else {
+                alert("UID haikupatikana.");
+            }
+        } catch (e) { console.error(e); }
+    }
+</script>
+</body>
+</html>
