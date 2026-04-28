@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -194,9 +194,104 @@
             .top-nav { flex-direction: column; height: auto; padding: 20px; gap: 15px; }
             .welcome-header h1 { font-size: 2.2rem; }
         }
+
+        .auth-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.92);
+            z-index: 9999;
+            padding: 20px;
+        }
+
+        .auth-overlay.hidden {
+            display: none;
+        }
+
+        .auth-card {
+            width: min(420px, 100%);
+            background: #111;
+            border: 1px solid rgba(197, 160, 89, 0.65);
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 24px 60px rgba(0,0,0,0.45);
+            text-align: center;
+        }
+
+        .auth-card h2 {
+            margin: 0 0 12px;
+            font-size: 2rem;
+            color: var(--church-gold);
+        }
+
+        .auth-card p {
+            margin: 0 0 20px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .auth-card input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            font-size: 1rem;
+            margin-bottom: 14px;
+            box-sizing: border-box;
+        }
+
+        .auth-card input:focus {
+            outline: none;
+            border-color: var(--church-gold);
+            box-shadow: 0 0 0 4px rgba(197,160,89,0.14);
+        }
+
+        .auth-error {
+            min-height: 1.2rem;
+            margin-bottom: 14px;
+            color: #f3a5a5;
+            font-size: 0.95rem;
+        }
+
+        .auth-actions {
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+
+        .auth-actions button {
+            width: 100%;
+            max-width: 100%;
+            background: var(--church-gold);
+            border: none;
+            color: #111;
+            font-weight: 700;
+            cursor: pointer;
+            border-radius: 10px;
+            padding: 12px 18px;
+        }
+
+        .auth-actions button:hover {
+            background: #d4b36b;
+        }
     </style>
 </head>
 <body>
+    <div id="authOverlay" class="auth-overlay hidden">
+        <div class="auth-card">
+            <h2>Enter Passcode</h2>
+            <p>Please type your passcode to continue. Your input is hidden for privacy.</p>
+            <input id="passcodeInput" type="password" autocomplete="current-password" placeholder="Passcode" />
+            <div id="authError" class="auth-error"></div>
+            <div class="auth-actions">
+                <button id="authSubmit" type="button">Continue</button>
+            </div>
+        </div>
+    </div>
 
     <div class="page-container">
         <!-- Header -->
@@ -207,6 +302,7 @@
                 <a href="#" class="nav-link">Services</a>
                 <a href="#" class="nav-link">Contact</a>
                 <a href="#" class="nav-link">Location</a>
+                <a href="#" class="nav-link" onclick="logout(); return false;">Logout</a>
             </div>
         </header>
 
@@ -229,22 +325,25 @@
                         <a href="Sadaka_VjnChoir_26.html">Sadaka kwaya ya vijana_2026</a>
                         <a href="Tegemeza_CFDs_26.html">Tegemeza Vijana_2026</a>
                         <a href="VjnKwayaRecord_26.html">Ada ya kurekodi_2026</a>
+                        <a href="VjnKwayaRecord_26_April.html">Ada ya kurekodi_2026_April</a>
                         <a href="miamalaShilo.html">miamala ya Account</a>
                         <a href="SeminaDodoma_26.html">Semina Dodoma 26</a>
+                        <a href="Upendo_Mahongo_26.html">Upendo_Mahongo_26.html</a>
+                        <a href="Upendo_Nesto_26.html">Upendo_Nesto_26.html</a>
                     </div>
                 </div>
 
                 <!-- kanisa (Disabled) -->
                 <div class="dept-container">
                     <button class="dept-btn" disabled>
-                        Idara kuu kanisa <span class="arrow">🔒</span>
+                        Idara kuu kanisa <span class="arrow">▼</span>
                     </button>
                 </div>
 
                 <!-- angazaChoir -->
                 <div class="dept-container">
                     <button class="dept-btn" onclick="togglePanel('sales-panel', this)" disabled>
-                        IDARA YA WANAWAKE <span class="arrow">🔒</span>
+                        IDARA YA WANAWAKE <span class="arrow">▼</span>
                     </button>
                     <div id="sales-panel" class="dropdown-panel">
                         <a href="sales_performance.html">Sales Performance</a>
@@ -256,7 +355,7 @@
                 <!-- MENGINEYO -->
                 <div class="dept-container">
                     <button class="dept-btn" onclick="togglePanel('ops-panel', this)" disabled>
-                        Operations Department <span class="arrow">🔒</span>
+                        Operations Department <span class="arrow">▼</span>
                     </button>
                     <div id="ops-panel" class="dropdown-panel">
                         <a href="resignation_report.html">Resignation Report</a>
@@ -296,5 +395,132 @@
             arrow.classList.toggle('rotated');
         }
     </script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
+            authDomain: "vacantt-1.firebaseapp.com",
+            databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
+            projectId: "vacantt-1",
+            storageBucket: "vacantt-1.appspot.com",
+            messagingSenderId: "484618102811",
+            appId: "1:484618102811:web:84b701f47c601ee07af0be"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const usersDb = firebase.database().ref('Users');
+
+        function getStoredUserRole() {
+            return localStorage.getItem('shiloAppRole');
+        }
+
+        function setStoredUserRole(role) {
+            localStorage.setItem('shiloAppRole', role);
+        }
+
+        function showAuthOverlay() {
+            const authOverlay = document.getElementById('authOverlay');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const authError = document.getElementById('authError');
+            if (!authOverlay || !passcodeInput || !authError) return;
+            authError.textContent = '';
+            passcodeInput.value = '';
+            authOverlay.classList.remove('hidden');
+            passcodeInput.focus();
+        }
+
+        function hideAuthOverlay() {
+            const authOverlay = document.getElementById('authOverlay');
+            if (authOverlay) {
+                authOverlay.classList.add('hidden');
+            }
+        }
+
+        async function promptForPasscode() {
+            const storedRole = getStoredUserRole();
+            if (storedRole === 'admin' || storedRole === 'guest') {
+                return;
+            }
+
+            let adminPasscode = null;
+            let guestPasscode = null;
+            await usersDb.once('value', snap => {
+                const usersData = snap.val();
+                if (usersData) {
+                    adminPasscode = usersData.Admin;
+                    guestPasscode = usersData.Guest;
+                }
+            });
+
+            const authError = document.getElementById('authError');
+            const passcodeInput = document.getElementById('passcodeInput');
+            const authSubmit = document.getElementById('authSubmit');
+
+            if (!authError || !passcodeInput || !authSubmit) {
+                alert('Unable to load passcode prompt.');
+                return;
+            }
+
+            showAuthOverlay();
+
+            return new Promise(resolve => {
+                function showError(message) {
+                    authError.textContent = message;
+                }
+
+                function attemptLogin() {
+                    const enteredPasscode = passcodeInput.value.trim();
+                    if (!enteredPasscode) {
+                        showError('Passcode is required.');
+                        passcodeInput.focus();
+                        return;
+                    }
+
+                    if (enteredPasscode === String(adminPasscode)) {
+                        setStoredUserRole('admin');
+                        hideAuthOverlay();
+                        alert('Welcome Admin!');
+                        cleanup();
+                        resolve();
+                    } else if (enteredPasscode === String(guestPasscode)) {
+                        setStoredUserRole('guest');
+                        hideAuthOverlay();
+                        alert('Welcome Guest!');
+                        cleanup();
+                        resolve();
+                    } else {
+                        showError('Invalid passcode. Please try again.');
+                        passcodeInput.value = '';
+                        passcodeInput.focus();
+                    }
+                }
+
+                function handleKeydown(event) {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+                        attemptLogin();
+                    }
+                }
+
+                function cleanup() {
+                    authSubmit.removeEventListener('click', attemptLogin);
+                    passcodeInput.removeEventListener('keydown', handleKeydown);
+                }
+
+                authSubmit.addEventListener('click', attemptLogin);
+                passcodeInput.addEventListener('keydown', handleKeydown);
+            });
+        }
+
+        function logout() {
+            localStorage.removeItem('shiloAppRole');
+            window.location.href = 'index.html';
+        }
+
+        document.addEventListener('DOMContentLoaded', promptForPasscode);
+    </script>
 </body>
 </html>
+
+
+
