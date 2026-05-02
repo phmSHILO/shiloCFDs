@@ -93,6 +93,49 @@
         .select2-dropdown {
             min-width: 200px;
         }
+
+        .autocomplete-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .autocomplete-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .autocomplete-suggestions.show {
+            display: block;
+        }
+
+        .suggestion-item {
+            padding: 8px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 0.95rem;
+            color: #495057;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-item:hover,
+        .suggestion-item.selected {
+            background-color: #e9ecef;
+            color: #0d6efd;
+        }
     </style>
 
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -121,10 +164,12 @@
 
         const db = database.ref("VjnKwayaRecord_26");
         const usersDb = database.ref("Users"); // Reference to your Users node
+        const memberIdsDb = database.ref("memberIDs"); // Reference to memberIDs node
 
         let datePickerInstance;
         let currentUserRole = null;
         let allTransactionsData = []; // Global variable to store all fetched data
+        let membersList = []; // Global variable to store member data for autocomplete
 
         // Function to show/hide elements based on role
         function applyRoleRestrictions(role) {
@@ -148,9 +193,101 @@
                 currentUserRole = storedRole;
                 load();
                 applyRoleRestrictions(currentUserRole);
+                initAutocomplete(); // Initialize autocomplete after load
             } else {
                 window.location.href = 'index.html';
             }
+        }
+
+        // Fetch memberIDs from Firebase
+        function loadMembersList() {
+            memberIdsDb.once('value', snap => {
+                const data = snap.val();
+                membersList = [];
+                if (data) {
+                    Object.keys(data).forEach(key => {
+                        const member = data[key];
+                        if (member.fullName && member.uid) {
+                            membersList.push({
+                                fullName: member.fullName,
+                                uid: member.uid,
+                                key: key,
+                                description: member.description || 'VjnKwayaRecord_26'
+                            });
+                        }
+                    });
+                }
+                console.log('Members loaded:', membersList);
+            });
+        }
+
+        // Initialize autocomplete on name input
+        function initAutocomplete() {
+            const nameInput = document.getElementById('name');
+            const suggestionsDiv = document.getElementById('autocompleteSuggestions');
+
+            if (!nameInput) return;
+
+            nameInput.addEventListener('input', function() {
+                const inputValue = this.value.trim().toLowerCase();
+
+                if (inputValue.length === 0) {
+                    suggestionsDiv.classList.remove('show');
+                    suggestionsDiv.innerHTML = '';
+                    return;
+                }
+
+                // Filter members based on input
+                const matches = membersList.filter(member =>
+                    member.fullName.toLowerCase().includes(inputValue)
+                );
+
+                if (matches.length === 0) {
+                    suggestionsDiv.classList.remove('show');
+                    suggestionsDiv.innerHTML = '';
+                    return;
+                }
+
+                // Display suggestions
+                suggestionsDiv.innerHTML = '';
+                matches.forEach(member => {
+                    const suggestionDiv = document.createElement('div');
+                    suggestionDiv.className = 'suggestion-item';
+                    suggestionDiv.textContent = member.fullName;
+                    suggestionDiv.addEventListener('click', function() {
+                        // Populate name, uid, and description
+                        document.getElementById('name').value = member.fullName;
+                        document.getElementById('uid').value = member.uid;
+
+                        const descriptionElement = document.getElementById('description');
+                        if (descriptionElement) {
+                            const descriptionValue = member.description || 'VjnKwayaRecord_26';
+                            let optionExists = Array.from(descriptionElement.options).some(opt => opt.value === descriptionValue);
+                            if (!optionExists) {
+                                const newOption = document.createElement('option');
+                                newOption.value = descriptionValue;
+                                newOption.textContent = descriptionValue;
+                                descriptionElement.appendChild(newOption);
+                            }
+                            descriptionElement.value = descriptionValue;
+                        }
+
+                        // Hide suggestions
+                        suggestionsDiv.classList.remove('show');
+                        suggestionsDiv.innerHTML = '';
+                    });
+                    suggestionsDiv.appendChild(suggestionDiv);
+                });
+
+                suggestionsDiv.classList.add('show');
+            });
+
+            // Hide suggestions when clicking outside
+            document.addEventListener('click', function(event) {
+                if (!nameInput.contains(event.target) && !suggestionsDiv.contains(event.target)) {
+                    suggestionsDiv.classList.remove('show');
+                }
+            });
         }
 
         // MODIFIED: Helper to initialize Select2 with custom placeholders per filter
@@ -223,12 +360,8 @@
             });
 
             // Add predefined description options ONLY to the modal's description set
-            allModalDescriptions.add("Tegemeza_26");
-            allModalDescriptions.add("ADA_26");
-            allModalDescriptions.add("Dodoma_26");
-            allModalDescriptions.add("Kwaya Record_26");
-            allModalDescriptions.add("Sadaka kwayaVjn_26");
-            allModalDescriptions.add("Sadaka Mkesha_26");
+            
+            allModalDescriptions.add("VjnKwayaRecord_26");
 
 
             const filterElements = {
@@ -296,7 +429,10 @@
         // Call promptForPasscode when the script loads
         // This will handle authentication and then call load()
         // Wrapped in DOMContentLoaded to ensure promptForPasscode isn't called before DOM is fully ready
-        document.addEventListener('DOMContentLoaded', promptForPasscode);
+        document.addEventListener('DOMContentLoaded', function() {
+            loadMembersList(); // Load members for autocomplete
+            promptForPasscode();
+        });
 
 
         function parseDateForInput(dateText) {
@@ -440,6 +576,13 @@
             document.getElementById("date").value = ""; // Clear the hidden input
             document.getElementById("key").value = "";
 
+            // Clear autocomplete suggestions
+            const suggestionsDiv = document.getElementById("autocompleteSuggestions");
+            if (suggestionsDiv) {
+                suggestionsDiv.classList.remove('show');
+                suggestionsDiv.innerHTML = '';
+            }
+
             if (datePickerInstance) {
                 datePickerInstance.clear(true);
                 datePickerInstance.setDate(new Date()); // Set back to default or empty if preferred
@@ -557,7 +700,7 @@
 </head>
 
 <body class="p-2">
-    <div class="nav-links">
+   <div class="nav-links">
         <a href="index.html">Home</a>
         <a href="miamalaShilo.html">Miamala</a>
         <a href="Ada_CFDs_26.html">Ada_26</a>
@@ -575,13 +718,15 @@
         <div class="nav-dropdown">
             <button class="nav-dropdown-toggle">Upendo ▼</button>
             <div class="nav-dropdown-menu">
-                <a href="Upendo_Mahongo_26.html">Upendo_Mahongo</a>
+                <a href="Upendo_Mahongo_26.html" >Upendo_Mahongo</a>
                 <a href="Upendo_Nesto_26.html">Upendo_Nesto</a>
             </div>
         </div>
         <a href="#" onclick="logout(); return false;">Logout</a>
     </div>
-<div class="container-fluid">
+    </div>
+
+    <div class="container-fluid">
         <div class="d-flex align-items-end mb-3">
             <div class="me-2">
                 <select class="form-select" id="filterMonth">
@@ -667,7 +812,10 @@
                     <input type="hidden" id="key">
 
                     <input class="form-control mb-2" id="uid" placeholder="UID">
-                    <input class="form-control mb-2" id="name" placeholder="Name">
+                    <div class="autocomplete-container mb-2">
+                        <input class="form-control" id="name" placeholder="Name" autocomplete="off">
+                        <div id="autocompleteSuggestions" class="autocomplete-suggestions"></div>
+                    </div>
                     <select class="form-select mb-2" id="description">
                         <option value="">Select Description</option>
                         <!-- Options will be populated here -->
@@ -733,6 +881,5 @@
 </body>
 
 </html>
-
 
 

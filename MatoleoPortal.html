@@ -84,7 +84,7 @@
             flex: 1; 
             padding-left: 5px; 
             font-weight: 600; 
-            text-transform: none; /* Ensures no automatic uppercase */
+            text-transform: none;
         }
 
         .table-container {
@@ -182,7 +182,7 @@
                 </tr>
                 <tr>
                     <td>4</td>
-                    <td style="text-align:left">UPENDO</td>
+                    <td style="text-align:left">UPENDO Mr Mahongo</td>
                     <td id="amt-upendo">0</td>
                     <td></td>
                 </tr>
@@ -217,77 +217,82 @@
 
     function startProcess() {
         const inputUid = prompt("Tafadhali weka UID yako:");
-        // Search using the input provided (keeping case flexibility)
         if (inputUid) fetchAllData(inputUid.trim());
     }
 
     async function fetchAllData(targetUid) {
-        // Reset 
+        // Reset UI
         const ids = ['amt-ada', 'amt-tegemeza', 'amt-dodoma', 'amt-upendo', 'debt-ada', 'total-deni', 'total-kiasi'];
         ids.forEach(id => document.getElementById(id).innerText = "0");
         document.getElementById('display-name').innerText = "---";
         document.getElementById('display-uid').innerText = "---";
 
-        let totalK = 0;
-        let userName = "---";
-        let actualUid = "---";
-        let found = false;
-
-        const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
-        // Secondary check in case they typed different casing than the DB
-        const getLower = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid.toLowerCase()).once('value');
-
         try {
-            // Check both original and lowercase to be user-friendly
-            const snapshots = await Promise.all([get('Ada_CFDs_26'), get('SeminaDodoma_26'), get('Tegemeza_CFDs_26'), get('Upendo_Mr Mahongo_26')]);
+            // 1. First, check if UID exists in 'memberIDs'
+            const memberSnap = await db.ref('memberIDs').orderByChild('uid').equalTo(targetUid).once('value');
             
-            // If nothing found with exact case, try lowercase
-            let results = snapshots;
-            if (!snapshots.some(s => s.exists())) {
-                results = await Promise.all([getLower('Ada_CFDs_26'), getLower('SeminaDodoma_26'), getLower('Tegemeza_CFDs_26'), getLower('Upendo_Mr Mahongo_26')]);
+            if (!memberSnap.exists()) {
+                alert("UID haikupatikana.");
+                return;
             }
 
-            const [a, b, c, d] = results;
+            // Get member details (taking the first matching record)
+            const memberData = Object.values(memberSnap.val())[0];
+            const userName = memberData.fullName;
+            const actualUid = memberData.uid;
 
+            // Update Name and UID at the top
+            document.getElementById('display-name').innerText = userName;
+            document.getElementById('display-uid').innerText = actualUid;
+
+            // 2. Now fetch contribution data across the four paths
+            const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
+            const results = await Promise.all([
+                get('Ada_CFDs_26'), 
+                get('SeminaDodoma_26'), 
+                get('Tegemeza_CFDs_26'), 
+                get('Upendo_Mahongo_26')
+            ]);
+
+            const [a, b, c, d] = results;
+            let totalK = 0;
+
+            // Process Ada (Calculates Debt)
             let adaSum = 0;
             if (a.exists()) {
                 const rec = Object.values(a.val())[0];
-                if (rec.contributions) Object.values(rec.contributions).forEach(v => adaSum += parseFloat(v) || 0);
-                userName = rec.name; 
-                actualUid = rec.uid; // Get exact case from DB
-                found = true;
+                if (rec.contributions) {
+                    Object.values(rec.contributions).forEach(v => adaSum += parseFloat(v) || 0);
+                }
             }
+            const debt = 12000 - adaSum;
+            document.getElementById('amt-ada').innerText = adaSum.toLocaleString();
+            document.getElementById('debt-ada').innerText = (debt > 0 ? debt : 0).toLocaleString();
+            document.getElementById('total-deni').innerText = (debt > 0 ? debt : 0).toLocaleString();
+            totalK += adaSum;
 
-            const process = (snap, elId) => {
+            // Process others (Dodoma, Tegemeza, Upendo)
+            const processRow = (snap, elId) => {
+                let v = 0;
                 if (snap.exists()) {
                     const rec = Object.values(snap.val())[0];
-                    const v = parseFloat(rec.amount) || 0;
-                    document.getElementById(elId).innerText = v.toLocaleString();
-                    totalK += v; 
-                    userName = rec.name; 
-                    actualUid = rec.uid; // Get exact case from DB
-                    found = true;
+                    v = parseFloat(rec.amount) || 0;
                 }
+                document.getElementById(elId).innerText = v.toLocaleString();
+                totalK += v;
             };
 
-            process(b, 'amt-dodoma');
-            process(c, 'amt-tegemeza');
-            process(d, 'amt-upendo');
+            processRow(b, 'amt-dodoma');
+            processRow(c, 'amt-tegemeza');
+            processRow(d, 'amt-upendo');
 
-            if (found) {
-                const debt = 12000 - adaSum;
-                document.getElementById('amt-ada').innerText = adaSum.toLocaleString();
-                document.getElementById('debt-ada').innerText = (debt > 0 ? debt : 0).toLocaleString();
-                document.getElementById('total-deni').innerText = (debt > 0 ? debt : 0).toLocaleString();
-                totalK += adaSum;
-                
-                document.getElementById('display-name').innerText = userName;
-                document.getElementById('display-uid').innerText = actualUid; // Display actual DB value
-                document.getElementById('total-kiasi').innerText = totalK.toLocaleString();
-            } else {
-                alert("UID haikupatikana.");
-            }
-        } catch (e) { console.error(e); }
+            // Final Total Update
+            document.getElementById('total-kiasi').innerText = totalK.toLocaleString();
+
+        } catch (e) { 
+            console.error("Database Error:", e);
+            alert("Kuna hitilafu ya mtandao. Tafadhali jaribu tena.");
+        }
     }
 </script>
 </body>
