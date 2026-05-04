@@ -15,118 +15,80 @@
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg-color);
             margin: 0;
-            padding: 10px 5px;
+            padding: 5px;
             display: flex;
             justify-content: center;
+            min-height: 100vh;
         }
 
         .report-container {
             background-color: #fff;
-            padding: 15px;
+            padding: 10px;
             border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
             width: 100%;
-            max-width: 850px;
+            max-width: 800px;
             box-sizing: border-box;
         }
 
         .portal-header {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             border-bottom: 1px solid #eee;
-            padding-bottom: 10px;
+            padding-bottom: 8px;
         }
 
         .portal-header h1 { 
-            margin: 0; 
-            font-size: 1.2rem; 
-            color: var(--primary-color); 
-            text-transform: uppercase; 
+            margin: 0; font-size: 1rem; color: var(--primary-color); text-transform: uppercase; 
         }
 
         .portal-header h2 { 
-            margin: 2px 0 0 0; 
-            font-size: 0.85rem; 
-            color: #666; 
+            margin: 2px 0 0 0; font-size: 0.75rem; color: #666; 
         }
 
         .search-btn {
-            display: block;
-            width: 100%;
-            max-width: 200px;
-            margin: 15px auto;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: bold;
-            font-size: 0.9rem;
-            cursor: pointer;
+            display: block; width: 100%; max-width: 180px; margin: 10px auto;
+            background-color: var(--primary-color); color: white; border: none;
+            padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer;
         }
 
         .info-section { 
-            margin-bottom: 15px; 
-            border: 1px solid #f0f0f0;
-            padding: 10px;
-            border-radius: 6px;
+            margin-bottom: 10px; border: 1px solid #f0f0f0; padding: 8px; border-radius: 6px; background-color: #fafafa;
         }
 
         .info-row { 
-            margin-bottom: 8px; 
-            display: flex; 
-            font-size: 0.9rem;
+            margin-bottom: 5px; display: flex; font-size: 0.85rem; align-items: center;
         }
 
-        .label { width: 50px; font-weight: bold; color: #555; }
-        .value { 
-            border-bottom: 1px solid #eee; 
-            flex: 1; 
-            padding-left: 5px; 
-            font-weight: 600; 
-            text-transform: none;
-        }
+        .label { width: 45px; font-weight: bold; color: #555; font-size: 0.75rem; }
+        .value { border-bottom: 1px solid #eee; flex: 1; padding-left: 5px; font-weight: 600; color: var(--primary-color); }
 
-        .table-container {
-            width: 100%;
-            overflow: hidden;
-        }
+        .table-container { width: 100%; overflow: hidden; }
 
-        table { 
-            width: 100%; 
-            border-collapse: collapse; 
-            table-layout: fixed;
-        }
+        table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
         th, td { 
-            border: 1px solid #ddd; 
-            padding: 8px 4px;
-            font-size: 0.75rem;
-            word-wrap: break-word;
-            text-align: center;
+            border: 1px solid #ddd; padding: 6px 2px; font-size: 0.65rem; text-align: center;
+            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
 
-        th { 
-            background-color: #f8f9fa; 
-            color: var(--primary-color);
-            font-weight: bold; 
-        }
+        th { background-color: #f8f9fa; color: var(--primary-color); font-weight: bold; }
 
-        .col-sn { width: 25px; }
-        .col-name { width: auto; text-align: left; }
-        .col-amt { width: 70px; }
-        .col-debt { width: 60px; }
+        .col-sn { width: 8%; }
+        .col-aina { width: 32%; text-align: left; padding-left: 4px; }
+        .col-ahadi { width: 20%; }
+        .col-uli { width: 20%; }
+        .col-deni { width: 20%; }
 
         tr.total-row { font-weight: bold; background-color: #fcfcfc; }
-        .amount-cell { font-weight: 600; }
         .debt-value { color: var(--accent-color); }
 
-        @media (min-width: 600px) {
-            th, td { font-size: 0.95rem; padding: 12px; }
-            .portal-header h1 { font-size: 1.8rem; }
-            .col-sn { width: 50px; }
-            .col-amt { width: 150px; }
-            .col-debt { width: 120px; }
+        @media (min-width: 480px) {
+            th, td { font-size: 0.8rem; padding: 8px 4px; }
+            .portal-header h1 { font-size: 1.4rem; }
+            .portal-header h2 { font-size: 0.9rem; }
+            .label { width: 50px; font-size: 0.85rem; }
+            .info-row { font-size: 0.9rem; }
         }
     </style>
 </head>
@@ -156,42 +118,48 @@
             <thead>
                 <tr>
                     <th class="col-sn">SN</th>
-                    <th class="col-name">AINA</th>
-                    <th class="col-amt">KIASI</th>
-                    <th class="col-debt">DENI</th>
+                    <th class="col-aina">AINA</th>
+                    <th class="col-ahadi">Ahadi</th>
+                    <th class="col-uli">Ulichotoa</th>
+                    <th class="col-deni">Deni</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td style="text-align:left">ADA_26</td>
-                    <td id="amt-ada" class="amount-cell">0</td>
-                    <td id="debt-ada" class="debt-value">0</td>
+                    <td class="col-aina">ADA_26</td>
+                    <td id="ahadi-ada">0</td>
+                    <td id="uli-ada">0</td>
+                    <td id="deni-ada">0</td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td style="text-align:left">TEGEMEZA_26</td>
-                    <td id="amt-tegemeza">0</td>
-                    <td></td>
+                    <td class="col-aina">TEGEMEZA_26</td>
+                    <td id="ahadi-tegemeza">0</td>
+                    <td id="uli-tegemeza">0</td>
+                    <td id="deni-tegemeza">0</td>
                 </tr>
                 <tr>
                     <td>3</td>
-                    <td style="text-align:left">SEMINA DODOMA</td>
-                    <td id="amt-dodoma">0</td>
-                    <td></td>
+                    <td class="col-aina">SEMINA DODOMA</td>
+                    <td id="ahadi-dodoma">0</td>
+                    <td id="uli-dodoma">0</td>
+                    <td id="deni-dodoma">0</td>
                 </tr>
                 <tr>
                     <td>4</td>
-                    <td style="text-align:left">Upendo-[Mr Mahongo]</td>
-                    <td id="amt-upendo">0</td>
-                    <td></td>
+                    <td class="col-aina">UPENDO Mr Mahongo</td>
+                    <td id="ahadi-upendo">0</td>
+                    <td id="uli-upendo">0</td>
+                    <td id="deni-upendo">0</td>
                 </tr>
             </tbody>
             <tfoot>
                 <tr class="total-row">
                     <td colspan="2" style="text-align:right">JUMLA:</td>
-                    <td id="total-kiasi">0</td>
-                    <td id="total-deni" class="debt-value">0</td>
+                    <td id="total-ahadi">0</td>
+                    <td id="total-uli">0</td>
+                    <td id="total-deni">0</td>
                 </tr>
             </tfoot>
         </table>
@@ -212,7 +180,7 @@
       appId: "1:484618102811:web:84b701f47c601ee07af0be"
     };
 
-    firebase.initializeApp(firebaseConfig);
+    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
     function startProcess() {
@@ -221,78 +189,83 @@
     }
 
     async function fetchAllData(targetUid) {
-        // Reset UI
-        const ids = ['amt-ada', 'amt-tegemeza', 'amt-dodoma', 'amt-upendo', 'debt-ada', 'total-deni', 'total-kiasi'];
-        ids.forEach(id => document.getElementById(id).innerText = "0");
+        const ids = ['uli-ada', 'deni-ada', 'ahadi-tegemeza', 'uli-tegemeza', 'deni-tegemeza', 
+                     'ahadi-dodoma', 'uli-dodoma', 'deni-dodoma', 'ahadi-upendo', 'uli-upendo', 
+                     'deni-upendo', 'total-ahadi', 'total-uli', 'total-deni', 'ahadi-ada'];
+        ids.forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = "0"; });
         document.getElementById('display-name').innerText = "---";
         document.getElementById('display-uid').innerText = "---";
 
         try {
-            // 1. First, check if UID exists in 'memberIDs'
-            const memberSnap = await db.ref('memberIDs').orderByChild('uid').equalTo(targetUid).once('value');
-            
-            if (!memberSnap.exists()) {
-                alert("UID haikupatikana.");
+            const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
+            const [memberSnap, a, b, c, d] = await Promise.all([
+                db.ref('memberIDs').orderByChild('uid').equalTo(targetUid).once('value'),
+                get('Ada_CFDs_26'), get('SeminaDodoma_26'), get('Tegemeza_CFDs_26'), get('Upendo_Mahongo_26')
+            ]);
+
+            if (!memberSnap.exists() && !a.exists() && !b.exists() && !c.exists() && !d.exists()) {
+                alert("Umekosea UID / Wrong UID entered.");
                 return;
             }
 
-            // Get member details (taking the first matching record)
-            const memberData = Object.values(memberSnap.val())[0];
-            const userName = memberData.fullName;
-            const actualUid = memberData.uid;
-
-            // Update Name and UID at the top
-            document.getElementById('display-name').innerText = userName;
-            document.getElementById('display-uid').innerText = actualUid;
-
-            // 2. Now fetch contribution data across the four paths
-            const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
-            const results = await Promise.all([
-                get('Ada_CFDs_26'), 
-                get('SeminaDodoma_26'), 
-                get('Tegemeza_CFDs_26'), 
-                get('Upendo_Mahongo_26')
-            ]);
-
-            const [a, b, c, d] = results;
-            let totalK = 0;
-
-            // Process Ada (Calculates Debt)
-            let adaSum = 0;
-            if (a.exists()) {
-                const rec = Object.values(a.val())[0];
-                if (rec.contributions) {
-                    Object.values(rec.contributions).forEach(v => adaSum += parseFloat(v) || 0);
-                }
+            document.getElementById('display-uid').innerText = targetUid;
+            if (memberSnap.exists()) {
+                const memberData = Object.values(memberSnap.val())[0];
+                document.getElementById('display-name').innerText = memberData.fullName || "---";
             }
-            const debt = 12000 - adaSum;
-            document.getElementById('amt-ada').innerText = adaSum.toLocaleString();
-            document.getElementById('debt-ada').innerText = (debt > 0 ? debt : 0).toLocaleString();
-            document.getElementById('total-deni').innerText = (debt > 0 ? debt : 0).toLocaleString();
-            totalK += adaSum;
 
-            // Process others (Dodoma, Tegemeza, Upendo)
-            const processRow = (snap, elId) => {
-                let v = 0;
+            let sumAhadi = 0, sumUli = 0, sumDeni = 0;
+
+            let adaUli = 0, adaAhadi = 0;
+            if (a.exists()) {
+                adaAhadi = 12000;
+                const rec = Object.values(a.val())[0];
+                if (rec.contributions && typeof rec.contributions === 'object') {
+                    Object.values(rec.contributions).forEach(val => {
+                        const num = parseFloat(val); if (!isNaN(num)) adaUli += num;
+                    });
+                } else if (rec.amount) adaUli = parseFloat(rec.amount) || 0;
+                if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
+            }
+            const adaDeni = Math.max(0, adaAhadi - adaUli);
+            document.getElementById('ahadi-ada').innerText = adaAhadi.toLocaleString();
+            document.getElementById('uli-ada').innerText = adaUli.toLocaleString();
+            document.getElementById('deni-ada').innerText = adaDeni.toLocaleString();
+            sumAhadi += adaAhadi; sumUli += adaUli; sumDeni += adaDeni;
+
+            const processStandard = (snap, prefix) => {
+                let ahadi = 0, uli = 0;
                 if (snap.exists()) {
                     const rec = Object.values(snap.val())[0];
-                    v = parseFloat(rec.amount) || 0;
+                    ahadi = parseFloat(rec.amount) || 0;
+                    uli = parseFloat(rec.reducedAmount) || 0;
+                    if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
                 }
-                document.getElementById(elId).innerText = v.toLocaleString();
-                totalK += v;
+                let deni = Math.max(0, ahadi - uli);
+                document.getElementById(`ahadi-${prefix}`).innerText = ahadi.toLocaleString();
+                document.getElementById(`uli-${prefix}`).innerText = uli.toLocaleString();
+                document.getElementById(`deni-${prefix}`).innerText = deni.toLocaleString();
+                sumAhadi += ahadi; sumUli += uli; sumDeni += deni;
             };
+            processStandard(c, 'tegemeza');
+            processStandard(b, 'dodoma');
 
-            processRow(b, 'amt-dodoma');
-            processRow(c, 'amt-tegemeza');
-            processRow(d, 'amt-upendo');
+            let upendoUli = 0, upendoAhadi = 0;
+            if (d.exists()) {
+                const rec = Object.values(d.val())[0];
+                upendoUli = parseFloat(rec.amount) || 0;
+                upendoAhadi = upendoUli; 
+                if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
+            }
+            document.getElementById('ahadi-upendo').innerText = upendoAhadi.toLocaleString();
+            document.getElementById('uli-upendo').innerText = upendoUli.toLocaleString();
+            document.getElementById('deni-upendo').innerText = "0";
+            sumAhadi += upendoAhadi; sumUli += upendoUli;
 
-            // Final Total Update
-            document.getElementById('total-kiasi').innerText = totalK.toLocaleString();
-
-        } catch (e) { 
-            console.error("Database Error:", e);
-            alert("Kuna hitilafu ya mtandao. Tafadhali jaribu tena.");
-        }
+            document.getElementById('total-ahadi').innerText = sumAhadi.toLocaleString();
+            document.getElementById('total-uli').innerText = sumUli.toLocaleString();
+            document.getElementById('total-deni').innerText = sumDeni.toLocaleString();
+        } catch (e) { console.error(e); alert("Hitilafu imetokea."); }
     }
 </script>
 </body>
