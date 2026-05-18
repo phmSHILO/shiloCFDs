@@ -7,7 +7,8 @@
     <style>
         :root {
             --primary-color: #1a3a5a;
-            --accent-color: #d9534f;
+            --accent-red: #d9534f;
+            --accent-green: #28a745;
             --bg-color: #f0f2f5;
         }
 
@@ -19,254 +20,336 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            transition: background-color 0.3s, color 0.3s;
         }
+
+        /* --- Dark Mode --- */
+        body.dark-mode {
+            --bg-color: #121212;
+            --primary-color: #bb86fc;
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode .report-container { background-color: #1e1e1e; color: #e0e0e0; box-shadow: 0 2px 12px rgba(0,0,0,0.5); }
+        body.dark-mode .info-section { background-color: #2c2c2c; border-color: #444; }
+        body.dark-mode th { background-color: #333; color: #bb86fc; border-color: #444; }
+        body.dark-mode td { border-color: #444; }
+        body.dark-mode .value { color: #bb86fc; border-bottom-color: #444; }
+        body.dark-mode .label { color: #aaa; }
 
         .report-container {
             background-color: #fff;
             padding: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
             width: 100%;
             max-width: 800px;
             box-sizing: border-box;
+            position: relative;
         }
 
-        .portal-header {
-            text-align: center;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
+        /* Theme Switch */
+        .theme-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            user-select: none;
+            font-weight: bold;
         }
 
-        .portal-header h1 { 
-            margin: 0; font-size: 1rem; color: var(--primary-color); text-transform: uppercase; 
-        }
+        .switch { position: relative; display: inline-block; width: 36px; height: 20px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 20px; }
+        .slider:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--primary-color); }
+        input:checked + .slider:before { transform: translateX(16px); }
 
-        .portal-header h2 { 
-            margin: 2px 0 0 0; font-size: 0.75rem; color: #666; 
-        }
+        .portal-header { text-align: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; margin-right: 60px; }
+        .portal-header h1 { margin: 0; font-size: 1rem; color: var(--primary-color); text-transform: uppercase; }
+        .portal-header h2 { margin: 2px 0 0 0; font-size: 0.75rem; color: #666; }
 
         .search-btn {
-            display: block; width: 100%; max-width: 180px; margin: 10px auto;
+            display: block; width: 100%; max-width: 200px; margin: 15px auto;
             background-color: var(--primary-color); color: white; border: none;
-            padding: 10px; border-radius: 6px; font-weight: bold; font-size: 0.85rem; cursor: pointer;
+            padding: 12px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; cursor: pointer;
+            transition: transform 0.1s, background 0.2s;
         }
+        
+        .search-btn:active { transform: scale(0.98); background-color: #122a42; }
 
-        .info-section { 
-            margin-bottom: 10px; border: 1px solid #f0f0f0; padding: 8px; border-radius: 6px; background-color: #fafafa;
-        }
+        .info-section { margin-bottom: 10px; border: 1px solid #f0f0f0; padding: 10px; border-radius: 8px; background-color: #fafafa; }
+        .info-row { margin-bottom: 6px; display: flex; font-size: 0.9rem; align-items: center; }
+        .label { width: 50px; font-weight: bold; color: #555; font-size: 0.8rem; }
+        .value { border-bottom: 1px solid #eee; flex: 1; padding-left: 8px; font-weight: 600; color: var(--primary-color); }
 
-        .info-row { 
-            margin-bottom: 5px; display: flex; font-size: 0.85rem; align-items: center;
-        }
+        /* --- UID Toggle Styles --- */
+        #display-uid { cursor: pointer; transition: filter 0.2s; }
+        .uid-hidden { filter: blur(5px); user-select: none; }
+        .uid-toggle-icon { margin-left: 10px; cursor: pointer; font-size: 0.9rem; opacity: 0.6; }
+        .uid-toggle-icon:hover { opacity: 1; }
 
-        .label { width: 45px; font-weight: bold; color: #555; font-size: 0.75rem; }
-        .value { border-bottom: 1px solid #eee; flex: 1; padding-left: 5px; font-weight: 600; color: var(--primary-color); }
-
-        .table-container { width: 100%; overflow: hidden; }
-
+        .table-container { width: 100%; overflow: hidden; border-radius: 4px; }
         table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 
-        th, td { 
-            border: 1px solid #ddd; padding: 6px 2px; font-size: 0.65rem; text-align: center;
-            overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
-        }
+        th, td { border: 1px solid #ddd; padding: 8px 4px; font-size: 0.7rem; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        th { background-color: #f8f9fa; color: var(--primary-color); font-weight: bold; text-transform: uppercase; }
 
-        th { background-color: #f8f9fa; color: var(--primary-color); font-weight: bold; }
+        .col-uli-val { color: var(--accent-green) !important; font-weight: 600; }
+        .col-deni-val { color: var(--accent-red) !important; font-weight: 600; }
 
         .col-sn { width: 8%; }
-        .col-aina { width: 32%; text-align: left; padding-left: 4px; }
+        .col-Mchango { width: 32%; text-align: left; padding-left: 6px; }
         .col-ahadi { width: 20%; }
         .col-uli { width: 20%; }
         .col-deni { width: 20%; }
 
-        tr.total-row { font-weight: bold; background-color: #fcfcfc; }
-        .debt-value { color: var(--accent-color); }
+        tr.total-row { background-color: #f8f9fa; }
+        tr.total-row td { font-weight: 900 !important; font-size: 0.8rem; color: var(--primary-color); }
 
         @media (min-width: 480px) {
-            th, td { font-size: 0.8rem; padding: 8px 4px; }
-            .portal-header h1 { font-size: 1.4rem; }
-            .portal-header h2 { font-size: 0.9rem; }
-            .label { width: 50px; font-size: 0.85rem; }
-            .info-row { font-size: 0.9rem; }
+            th, td { font-size: 0.85rem; padding: 10px 5px; }
+            .portal-header h1 { font-size: 1.5rem; }
+            .label { width: 60px; font-size: 0.9rem; }
+            tr.total-row td { font-size: 1rem; }
         }
     </style>
 </head>
 <body>
-
-<div class="report-container">
-    <div class="portal-header">
-        <h1>MATOLEO YANGU PORTAL</h1>
-        <h2>phm shilo (CFDs)</h2>
-    </div>
-
-    <button class="search-btn" onclick="startProcess()">Ingiza UID / Tafuta</button>
-
-    <div class="info-section">
-        <div class="info-row">
-            <span class="label">JINA:</span> 
-            <span id="display-name" class="value">---</span>
+    <div class="report-container">
+        <!-- Theme Toggle -->
+        <div class="theme-toggle">
+            <span>🌙 Mode</span>
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle">
+                <span class="slider"></span>
+            </label>
         </div>
-        <div class="info-row">
-            <span class="label">UID:</span> 
-            <span id="display-uid" class="value">---</span>
+
+        <div class="portal-header">
+            <h1>MATOLEO YANGU PORTAL</h1>
+            <h2>phm shilo (CFDs)</h2>
+        </div>
+
+        <button class="search-btn" onclick="toggleModal(true)">Ingiza UID / Tafuta</button>
+
+        <div class="info-section">
+            <div class="info-row">
+                <span class="label">JINA:</span> 
+                <span id="display-name" class="value">---</span>
+            </div>
+            <div class="info-row">
+                <span class="label">UID:</span> 
+                <span id="display-uid" class="value uid-hidden">---</span>
+                <span id="interface-uid-toggle" class="uid-toggle-icon">👁️</span>
+            </div>
+        </div>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th class="col-sn">SN</th>
+                        <th class="col-Mchango">MCHANGO</th>
+                        <th class="col-ahadi">AHADI</th>
+                        <th class="col-uli">UMETOA</th>
+                        <th class="col-deni">DENI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td class="col-Mchango">ADA_26</td>
+                        <td id="ahadi-ada">0</td>
+                        <td id="uli-ada" class="col-uli-val">0</td>
+                        <td id="deni-ada" class="col-deni-val">0</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="col-Mchango">TEGEMEZA_26</td>
+                        <td id="ahadi-tegemeza">0</td>
+                        <td id="uli-tegemeza" class="col-uli-val">0</td>
+                        <td id="deni-tegemeza" class="col-deni-val">0</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="col-Mchango">Semina Dodoma</td>
+                        <td id="ahadi-dodoma">0</td>
+                        <td id="uli-dodoma" class="col-uli-val">0</td>
+                        <td id="deni-dodoma" class="col-deni-val">0</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="col-Mchango">Upendo [Mr Mahongo]</td>
+                        <td id="ahadi-upendo">0</td>
+                        <td id="uli-upendo" class="col-uli-val">0</td>
+                        <td id="deni-upendo" class="col-deni-val">0</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td colspan="2" style="text-align:right">JUMLA:</td>
+                        <td id="total-ahadi">0</td>
+                        <td id="total-uli" class="col-uli-val">0</td>
+                        <td id="total-deni" class="col-deni-val">0</td>
+                    </tr>
+                </tfoot>
+            </table>
         </div>
     </div>
 
-    <div class="table-container">
-        <table>
-            <thead>
-                <tr>
-                    <th class="col-sn">SN</th>
-                    <th class="col-aina">AINA</th>
-                    <th class="col-ahadi">Ahadi</th>
-                    <th class="col-uli">Ulichotoa</th>
-                    <th class="col-deni">Deni</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td class="col-aina">ADA_26</td>
-                    <td id="ahadi-ada">0</td>
-                    <td id="uli-ada">0</td>
-                    <td id="deni-ada">0</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td class="col-aina">TEGEMEZA_26</td>
-                    <td id="ahadi-tegemeza">0</td>
-                    <td id="uli-tegemeza">0</td>
-                    <td id="deni-tegemeza">0</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td class="col-aina">SEMINA DODOMA</td>
-                    <td id="ahadi-dodoma">0</td>
-                    <td id="uli-dodoma">0</td>
-                    <td id="deni-dodoma">0</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td class="col-aina">UPENDO Mr Mahongo</td>
-                    <td id="ahadi-upendo">0</td>
-                    <td id="uli-upendo">0</td>
-                    <td id="deni-upendo">0</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr class="total-row">
-                    <td colspan="2" style="text-align:right">JUMLA:</td>
-                    <td id="total-ahadi">0</td>
-                    <td id="total-uli">0</td>
-                    <td id="total-deni">0</td>
-                </tr>
-            </tfoot>
-        </table>
+    <!-- UID Modal -->
+    <div id="uid-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 10000; justify-content: center; align-items: center;">
+        <div style="background:white; padding:20px; border-radius:12px; width:90%; max-width:320px; box-shadow:0 10px 30px rgba(0,0,0,0.3); color: #333;">
+            <h3 style="margin-top:0; font-size:1.1rem; color:#1a3a5a;">Ingiza UID Yako</h3>
+            <div style="position:relative; margin-bottom:20px;">
+                <input type="password" id="modal-uid-input" placeholder="Weka UID hapa..." style="width:100%; padding:12px; border:2px solid #eee; border-radius:8px; box-sizing:border-box; font-size:1rem; outline: none;">
+                <span id="toggle-modal-pass" style="position:absolute; right:12px; top:50%; transform:translateY(-50%); cursor:pointer; font-size:1.1rem; user-select:none;">👁️</span>
+            </div>
+            <div style="display:flex; justify-content:flex-end; gap:12px;">
+                <button onclick="toggleModal(false)" style="padding:10px 18px; border:none; background:#f0f0f0; border-radius:8px; cursor:pointer; font-weight:600; color:#666;">Ghairi</button>
+                <button id="modal-submit-btn" style="padding:10px 18px; border:none; background:#1a3a5a; color:white; border-radius:8px; cursor:pointer; font-weight:600;">Tafuta</button>
+            </div>
+        </div>
     </div>
-</div>
 
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-database-compat.js"></script>
 
-<script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
-      authDomain: "vacantt-1.firebaseapp.com",
-      databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
-      projectId: "vacantt-1",
-      storageBucket: "vacantt-1.firebasestorage.app",
-      messagingSenderId: "484618102811",
-      appId: "1:484618102811:web:84b701f47c601ee07af0be"
-    };
+    <script>
+        // --- UI Logic ---
+        document.getElementById('dark-mode-toggle').addEventListener('change', (e) => {
+            document.body.classList.toggle('dark-mode', e.target.checked);
+        });
 
-    if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+        const passInput = document.getElementById('modal-uid-input');
+        document.getElementById('toggle-modal-pass').addEventListener('click', () => {
+            passInput.type = passInput.type === 'password' ? 'text' : 'password';
+        });
 
-    function startProcess() {
-        const inputUid = prompt("Tafadhali weka UID yako:");
-        if (inputUid) fetchAllData(inputUid.trim());
-    }
+        // Interface UID Visibility Toggle
+        const interfaceUid = document.getElementById('display-uid');
+        document.getElementById('interface-uid-toggle').addEventListener('click', () => {
+            interfaceUid.classList.toggle('uid-hidden');
+        });
 
-    async function fetchAllData(targetUid) {
-        const ids = ['uli-ada', 'deni-ada', 'ahadi-tegemeza', 'uli-tegemeza', 'deni-tegemeza', 
-                     'ahadi-dodoma', 'uli-dodoma', 'deni-dodoma', 'ahadi-upendo', 'uli-upendo', 
-                     'deni-upendo', 'total-ahadi', 'total-uli', 'total-deni', 'ahadi-ada'];
-        ids.forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = "0"; });
-        document.getElementById('display-name').innerText = "---";
-        document.getElementById('display-uid').innerText = "---";
+        function toggleModal(show) {
+            document.getElementById('uid-modal').style.display = show ? 'flex' : 'none';
+            if(show) passInput.focus();
+        }
 
-        try {
-            const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
-            const [memberSnap, a, b, c, d] = await Promise.all([
-                db.ref('memberIDs').orderByChild('uid').equalTo(targetUid).once('value'),
-                get('Ada_CFDs_26'), get('SeminaDodoma_26'), get('Tegemeza_CFDs_26'), get('Upendo_Mahongo_26')
-            ]);
+        document.getElementById('modal-submit-btn').addEventListener('click', () => {
+            const val = passInput.value.trim();
+            if(val) { fetchAllData(val); toggleModal(false); }
+        });
 
-            if (!memberSnap.exists() && !a.exists() && !b.exists() && !c.exists() && !d.exists()) {
-                alert("Umekosea UID / Wrong UID entered.");
-                return;
-            }
+        // --- Firebase Logic ---
+        const firebaseConfig = {
+          apiKey: "AIzaSyCQCteNpcwUdpWizwzP8WuyDsyeTr-Wabk",
+          authDomain: "vacantt-1.firebaseapp.com",
+          databaseURL: "https://vacantt-1-default-rtdb.firebaseio.com",
+          projectId: "vacantt-1",
+          storageBucket: "vacantt-1.firebasestorage.app",
+          messagingSenderId: "484618102811",
+          appId: "1:484618102811:web:84b701f47c601ee07af0be"
+        };
 
-            document.getElementById('display-uid').innerText = targetUid;
-            if (memberSnap.exists()) {
-                const memberData = Object.values(memberSnap.val())[0];
-                document.getElementById('display-name').innerText = memberData.fullName || "---";
-            }
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-            let sumAhadi = 0, sumUli = 0, sumDeni = 0;
+        async function fetchAllData(targetUid) {
+            const ids = ['uli-ada', 'deni-ada', 'ahadi-tegemeza', 'uli-tegemeza', 'deni-tegemeza', 
+                         'ahadi-dodoma', 'uli-dodoma', 'deni-dodoma', 'ahadi-upendo', 'uli-upendo', 
+                         'deni-upendo', 'total-ahadi', 'total-uli', 'total-deni', 'ahadi-ada'];
+            
+            ids.forEach(id => { if(document.getElementById(id)) document.getElementById(id).innerText = "0"; });
+            document.getElementById('display-name').innerText = "---";
+            document.getElementById('display-uid').innerText = "---";
 
-            let adaUli = 0, adaAhadi = 0;
-            if (a.exists()) {
-                adaAhadi = 12000;
-                const rec = Object.values(a.val())[0];
-                if (rec.contributions && typeof rec.contributions === 'object') {
-                    Object.values(rec.contributions).forEach(val => {
-                        const num = parseFloat(val); if (!isNaN(num)) adaUli += num;
-                    });
-                } else if (rec.amount) adaUli = parseFloat(rec.amount) || 0;
-                if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
-            }
-            const adaDeni = Math.max(0, adaAhadi - adaUli);
-            document.getElementById('ahadi-ada').innerText = adaAhadi.toLocaleString();
-            document.getElementById('uli-ada').innerText = adaUli.toLocaleString();
-            document.getElementById('deni-ada').innerText = adaDeni.toLocaleString();
-            sumAhadi += adaAhadi; sumUli += adaUli; sumDeni += adaDeni;
+            try {
+                const get = (p) => db.ref(p).orderByChild('uid').equalTo(targetUid).once('value');
+                const [memberSnap, a, b, c, d] = await Promise.all([
+                    db.ref('memberIDs').orderByChild('uid').equalTo(targetUid).once('value'),
+                    get('Ada_CFDs_26'), get('SeminaDodoma_26'), get('Tegemeza_CFDs_26'), get('Upendo_Mahongo_26')
+                ]);
 
-            const processStandard = (snap, prefix) => {
-                let ahadi = 0, uli = 0;
-                if (snap.exists()) {
-                    const rec = Object.values(snap.val())[0];
-                    ahadi = parseFloat(rec.amount) || 0;
-                    uli = parseFloat(rec.reducedAmount) || 0;
-                    if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
+                if (!memberSnap.exists() && !a.exists() && !b.exists() && !c.exists() && !d.exists()) {
+                    alert("Umekosea UID / Wrong UID entered.");
+                    return;
                 }
-                let deni = Math.max(0, ahadi - uli);
-                document.getElementById(`ahadi-${prefix}`).innerText = ahadi.toLocaleString();
-                document.getElementById(`uli-${prefix}`).innerText = uli.toLocaleString();
-                document.getElementById(`deni-${prefix}`).innerText = deni.toLocaleString();
-                sumAhadi += ahadi; sumUli += uli; sumDeni += deni;
-            };
-            processStandard(c, 'tegemeza');
-            processStandard(b, 'dodoma');
 
-            let upendoUli = 0, upendoAhadi = 0;
-            if (d.exists()) {
-                const rec = Object.values(d.val())[0];
-                upendoUli = parseFloat(rec.amount) || 0;
-                upendoAhadi = upendoUli; 
-                if (document.getElementById('display-name').innerText === "---") document.getElementById('display-name').innerText = rec.name || "---";
+                document.getElementById('display-uid').innerText = targetUid;
+                if (memberSnap.exists()) {
+                    const memberData = Object.values(memberSnap.val())[0];
+                    document.getElementById('display-name').innerText = memberData.fullName || "---";
+                }
+
+                let sumAhadi = 0, sumUli = 0, sumDeni = 0;
+
+                // --- ADA_26 Logic ---
+                let adaUli = 0, adaAhadi = 12000; 
+                if (a.exists()) {
+                    const rec = Object.values(a.val())[0];
+                    if (rec.contributions && typeof rec.contributions === 'object') {
+                        Object.values(rec.contributions).forEach(val => {
+                            const num = parseFloat(val); if (!isNaN(num)) adaUli += num;
+                        });
+                    } else if (rec.amount) {
+                        adaUli = parseFloat(rec.amount) || 0;
+                    }
+                    if (document.getElementById('display-name').innerText === "---") {
+                        document.getElementById('display-name').innerText = rec.name || "---";
+                    }
+                }
+                const adaDeni = Math.max(0, adaAhadi - adaUli);
+                document.getElementById('ahadi-ada').innerText = adaAhadi.toLocaleString();
+                document.getElementById('uli-ada').innerText = adaUli.toLocaleString();
+                document.getElementById('deni-ada').innerText = adaDeni.toLocaleString();
+                sumAhadi += adaAhadi; sumUli += adaUli; sumDeni += adaDeni;
+
+                const processStandard = (snap, prefix) => {
+                    let ahadi = 0, uli = 0;
+                    if (snap.exists()) {
+                        const rec = Object.values(snap.val())[0];
+                        ahadi = parseFloat(rec.amount) || 0;
+                        uli = parseFloat(rec.reducedAmount) || 0;
+                    }
+                    let deni = Math.max(0, ahadi - uli);
+                    document.getElementById(`ahadi-${prefix}`).innerText = ahadi.toLocaleString();
+                    document.getElementById(`uli-${prefix}`).innerText = uli.toLocaleString();
+                    document.getElementById(`deni-${prefix}`).innerText = deni.toLocaleString();
+                    sumAhadi += ahadi; sumUli += uli; sumDeni += deni;
+                };
+
+                processStandard(c, 'tegemeza');
+                processStandard(b, 'dodoma');
+
+                let upendoUli = 0, upendoAhadi = 0;
+                if (d.exists()) {
+                    const rec = Object.values(d.val())[0];
+                    upendoUli = parseFloat(rec.amount) || 0;
+                    upendoAhadi = upendoUli; 
+                }
+                document.getElementById('ahadi-upendo').innerText = upendoAhadi.toLocaleString();
+                document.getElementById('uli-upendo').innerText = upendoUli.toLocaleString();
+                document.getElementById('deni-upendo').innerText = "0";
+                sumAhadi += upendoAhadi; sumUli += upendoUli;
+
+                document.getElementById('total-ahadi').innerText = sumAhadi.toLocaleString();
+                document.getElementById('total-uli').innerText = sumUli.toLocaleString();
+                document.getElementById('total-deni').innerText = sumDeni.toLocaleString();
+
+            } catch (e) { 
+                console.error(e); 
+                alert("Hitilafu imetokea."); 
             }
-            document.getElementById('ahadi-upendo').innerText = upendoAhadi.toLocaleString();
-            document.getElementById('uli-upendo').innerText = upendoUli.toLocaleString();
-            document.getElementById('deni-upendo').innerText = "0";
-            sumAhadi += upendoAhadi; sumUli += upendoUli;
-
-            document.getElementById('total-ahadi').innerText = sumAhadi.toLocaleString();
-            document.getElementById('total-uli').innerText = sumUli.toLocaleString();
-            document.getElementById('total-deni').innerText = sumDeni.toLocaleString();
-        } catch (e) { console.error(e); alert("Hitilafu imetokea."); }
-    }
-</script>
+        }
+    </script>
 </body>
 </html>
