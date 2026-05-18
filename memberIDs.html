@@ -10,8 +10,8 @@
             --border-color: #cbd5e1;
             --text-main: #0f172a;
             --text-muted: #475569;
-            --warning-bg: #fee2e2;
-            --warning-text: #b91c1c;
+            --warning-red: #ef4444;
+            --highlight-bg: #fee2e2;
         }
 
         body { 
@@ -60,8 +60,8 @@
 
         td { padding: 20px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
 
-        tr.is-duplicate { background-color: var(--warning-bg); }
-        tr.is-duplicate .col-name { color: var(--warning-text); }
+        /* Styles for duplicate rows */
+        tr.duplicate-row { background-color: var(--highlight-bg) !important; border-left: 4px solid var(--warning-red); }
 
         .col-sn { width: 50px; color: var(--text-muted); font-weight: 600; font-size: 16px; }
         .col-name { font-size: 18px; font-weight: 700; color: #000; }
@@ -91,6 +91,7 @@
         }
         .form-control { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid #94a3b8; font-size: 16px; margin-bottom: 12px; box-sizing: border-box; outline: none; }
         .form-control:focus { border-color: #3b82f6; }
+        .form-control.warning { border-color: var(--warning-red); border-width: 2px; }
         .w-100 { width: 100%; }
 
         @media (max-width: 600px) {
@@ -117,7 +118,10 @@
     </div>
 
     <div id="registerInterface">
-        <input type="text" id="fullName" class="form-control" placeholder="Member Full Name" onkeyup="checkDuplicateInRegistration()">
+        <!-- Input with datalist for auto-suggestions -->
+        <input type="text" id="fullName" class="form-control" placeholder="Member Full Name" list="memberSuggestions">
+        <datalist id="memberSuggestions"></datalist>
+        
         <input type="text" id="uid" class="form-control" placeholder="Member UID">
         <input type="text" id="phone" class="form-control" placeholder="Phone Number">
         <button id="saveBtn" class="btn btn-success w-100">Add to Database</button>
@@ -157,22 +161,35 @@
     const database = firebase.database();
     const membersRef = database.ref('memberIDs');
 
+    // Global variable to store current names for faster lookups
+    let allMembers = [];
+
     membersRef.on('value', (snapshot) => {
         const tableBody = document.getElementById('memberTableBody');
+        const datalist = document.getElementById('memberSuggestions');
         tableBody.innerHTML = '';
+        datalist.innerHTML = '';
+        allMembers = [];
         let sn = 1;
+
         snapshot.forEach((child) => {
             const key = child.key;
             const data = child.val();
             const safeName = data.fullName ? data.fullName.replace(/'/g, "\\'") : "Unknown";
             const phone = data.phone || 'N/A';
+            
+            allMembers.push({ name: data.fullName.toUpperCase(), id: data.uid });
+
+            // Add to datalist suggestions
+            const option = document.createElement('option');
+            option.value = data.fullName;
+            datalist.appendChild(option);
 
             tableBody.innerHTML += `
                 <tr data-name="${data.fullName.toUpperCase()}">
                     <td class="col-sn">${sn++}</td>
                     <td class="col-name">
-                        <div class="name-val">${data.fullName}</div>
-                        <!-- Only visible on small mobile screens -->
+                        <div class="main-name-text">${data.fullName}</div>
                         <div class="mobile-info-row">
                             <span class="uid-pill">${data.uid}</span>
                             <span class="phone-pill">${phone}</span>
@@ -188,52 +205,57 @@
                     </td>
                 </tr>`;
         });
-        checkAllDuplicates();
-        searchMember();
     });
 
-    function checkAllDuplicates() {
+    // AUTO-LOOKUP LOGIC: Listen as user types
+    document.getElementById('fullName').addEventListener('input', function(e) {
+        const val = e.target.value.toUpperCase().trim();
         const rows = document.querySelectorAll('#memberTableBody tr');
-        const nameCounts = {};
-        rows.forEach(row => {
-            const name = row.getAttribute('data-name');
-            nameCounts[name] = (nameCounts[name] || 0) + 1;
-        });
-        rows.forEach(row => {
-            const name = row.getAttribute('data-name');
-            if (nameCounts[name] > 1) {
-                row.classList.add('is-duplicate');
-            } else {
-                row.classList.remove('is-duplicate');
-            }
-        });
-    }
-
-    function checkDuplicateInRegistration() {
-        const input = document.getElementById('fullName');
-        const currentVal = input.value.trim().toUpperCase();
-        const rows = document.querySelectorAll('#memberTableBody tr');
-        let found = false;
+        let exactMatch = false;
 
         rows.forEach(row => {
             const rowName = row.getAttribute('data-name');
-            if (currentVal !== "" && rowName === currentVal) {
-                row.classList.add('is-duplicate');
-                found = true;
+            // Check if name exists in table
+            if (val !== "" && rowName.includes(val)) {
+                row.style.display = ""; // Show matching rows
+                if (rowName === val) {
+                    row.classList.add('duplicate-row');
+                    exactMatch = true;
+                } else {
+                    row.classList.remove('duplicate-row');
+                }
             } else {
-                checkAllDuplicates(); 
+                row.classList.remove('duplicate-row');
+                // Only hide if we aren't using the Find Member search bar
+                if (document.getElementById('searchInterface').style.display !== 'block') {
+                    row.style.display = (val === "") ? "" : "none";
+                }
             }
         });
 
-        input.style.borderColor = found ? 'var(--warning-text)' : '#94a3b8';
-    }
+        // Visual feedback on the input box
+        if (exactMatch) {
+            e.target.classList.add('warning');
+        } else {
+            e.target.classList.remove('warning');
+        }
+    });
+
+    // Enter Key to Submit
+    document.getElementById('registerInterface').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('saveBtn').click();
+    });
 
     function toggleRegister() {
         document.getElementById('searchInterface').style.display = 'none';
         const ui = document.getElementById('registerInterface');
         const isOpening = ui.style.display !== 'block';
         ui.style.display = isOpening ? 'block' : 'none';
-        if(isOpening) document.getElementById('fullName').focus();
+        if(isOpening) {
+            document.getElementById('fullName').focus();
+            // Reset table visibility when opening register
+            document.querySelectorAll('#memberTableBody tr').forEach(r => r.style.display = "");
+        }
     }
 
     function toggleSearch() {
@@ -241,12 +263,20 @@
         const ui = document.getElementById('searchInterface');
         const isOpening = ui.style.display !== 'block';
         ui.style.display = isOpening ? 'block' : 'none';
-        if(isOpening) document.getElementById('searchInput').focus();
+        if(isOpening) {
+            document.getElementById('searchInput').focus();
+            document.querySelectorAll('#memberTableBody tr').forEach(r => r.style.display = "");
+        }
     }
 
-    document.getElementById('registerInterface').addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('saveBtn').click();
-    });
+    function searchMember() {
+        const filter = document.getElementById('searchInput').value.toUpperCase();
+        const tr = document.getElementById('memberTableBody').getElementsByTagName('tr');
+        for (let i = 0; i < tr.length; i++) {
+            const td = tr[i].getElementsByTagName('td')[1];
+            if (td) tr[i].style.display = (td.textContent.toUpperCase().includes(filter)) ? "" : "none";
+        }
+    }
 
     function deleteMember(id, name) { 
         if(confirm(`Delete ${name}?`)) membersRef.child(id).remove();
@@ -261,15 +291,6 @@
         }
     }
 
-    function searchMember() {
-        const filter = document.getElementById('searchInput').value.toUpperCase();
-        const tr = document.getElementById('memberTableBody').getElementsByTagName('tr');
-        for (let i = 0; i < tr.length; i++) {
-            const td = tr[i].getElementsByTagName('td')[1];
-            if (td) tr[i].style.display = (td.textContent.toUpperCase().includes(filter)) ? "" : "none";
-        }
-    }
-
     document.getElementById('saveBtn').onclick = () => {
         const name = document.getElementById('fullName').value;
         const id = document.getElementById('uid').value;
@@ -280,6 +301,7 @@
                 document.getElementById('fullName').value = ''; 
                 document.getElementById('uid').value = ''; 
                 document.getElementById('phone').value = ''; 
+                document.getElementById('fullName').classList.remove('warning');
                 toggleRegister();
             });
         } else {
